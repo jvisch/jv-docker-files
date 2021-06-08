@@ -39,10 +39,4 @@ RUN apt install ros-foxy-ros-base -y
 RUN apt install -y python3-argcomplete
 RUN activate-global-python-argcomplete3 --user
 
-# needed to source ros
-COPY ./entrypoint.sh /
-RUN ["chmod", "+x", "/entrypoint.sh"]
-ENTRYPOINT ["/entrypoint.sh"] 
-
-
-## TODO: argcomplete is not working on ros2 <tab><tab> .
+RUN echo "source /opt/ros/foxy/setup.bash" >> /etc/bash.bashrc
