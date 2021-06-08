@@ -4,9 +4,9 @@ FROM ubuntu:focal
 # https://github.com/phusion/baseimage-docker/issues/58#issuecomment-328814348
 ARG DEBIAN_FRONTEND=noninteractive
 
-# ###################
-# install ros2 foxy #
-# ###################
+# ##############
+# install ros2 #
+# ##############
 
 # upgrade all
 RUN apt-get update
@@ -26,17 +26,19 @@ RUN apt install tzdata -y
 # Set keyboard (avoid question)
 RUN apt install keyboard-configuration -y
 
+# enable auto-complete 
+RUN apt install python3-argcomplete -y
+
 # add sources: ROS 2 apt repositories
 RUN apt install curl gnupg2 lsb-release -y
+
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+RUN apt update
 
 # install ROS 2 packages
-RUN apt update
-RUN apt install ros-foxy-ros-base -y
+ARG ROS_DISTRO=foxy
 
-# enable auto-complete 
-RUN apt install -y python3-argcomplete
-RUN activate-global-python-argcomplete3 --user
+RUN apt install ros-${ROS_DISTRO}-ros-base -y
 
-RUN echo "source /opt/ros/foxy/setup.bash" >> /etc/bash.bashrc
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /etc/bash.bashrc
