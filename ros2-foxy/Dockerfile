@@ -41,6 +41,7 @@ RUN activate-global-python-argcomplete3 --user
 
 # needed to source ros
 COPY ./entrypoint.sh /
+RUN ["chmod", "+x", "/entrypoint.sh"]
 ENTRYPOINT ["/entrypoint.sh"] 
 
 
