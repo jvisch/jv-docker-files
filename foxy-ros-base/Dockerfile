@@ -1,8 +1,7 @@
-# foxy
+# foxy-ros-base
 FROM jvr/ros2:base-image
 
 ## Additional packages (extentions on base-image)
-
 RUN apt update && apt install -y \
         libbullet-dev
 
@@ -15,7 +14,7 @@ RUN apt update && apt install -y \
         libcunit1-dev
 
 ## Install ROS2 ros (ros-base)
-ARG ROS_DISTRO=foxy
+RUN apt update && apt install -y \
+        ros-foxy-ros-base
 
-RUN apt install ros-${ROS_DISTRO}-ros-base -y
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /etc/bash.bashrc
+RUN echo "source /opt/ros/foxy/setup.bash" >> /etc/bash.bashrc

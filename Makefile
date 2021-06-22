@@ -1,6 +1,8 @@
 SUBDIRS += base-image
-SUBDIRS += foxy
-SUBDIRS += galactic
+SUBDIRS += foxy-ros-base
+SUBDIRS += foxy-desktop
+SUBDIRS += galactic-ros-base
+SUBDIRS += galactic-desktop
 
 all: $(SUBDIRS)
 $(SUBDIRS):
