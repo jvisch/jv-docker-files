@@ -2,6 +2,13 @@
 
 jv-robot docker spul (ROS2 etc.)
 
+## Docker files
+
+In de map `dockerfiles` staan de Dockerfiles om images te maken met
+ROS2.
+
+Gebruik:
+
 1.  installeer docker
 2.  installeer make
 3.  run 'make' er er worden 5 images gemaakt
