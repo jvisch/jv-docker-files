@@ -1,0 +1,22 @@
+# based on: https://docs.ros.org/en/rolling/Tutorials/Writing-A-Simple-Py-Publisher-And-Subscriber.html
+# run `docker compose up`
+version: "3"
+services:
+    talker: # runs the publisher node 
+        build: .
+        volumes: 
+            - ./src/:/ros-workspace/src/
+        working_dir: /ros-workspace/
+        command: ros2 run py_pubsub talker
+    listener: # runs the publisher node 
+        build: .
+        volumes: 
+            - ./src/:/ros-workspace/src/
+        working_dir: /ros-workspace/
+        command: ros2 run py_pubsub listener
+    developer: # service to attach to for debugging
+        build: .
+        volumes: 
+            - ./src/:/ros-workspace/src/
+        working_dir: /ros-workspace/
+        command: [ "/bin/sh",  "-c", "while sleep 1000; do :; done"]
