@@ -1,25 +1,3 @@
-Jorg Visch 4 feb 2018
-
-# Beschrijving
-
-Deze repository gaat al het lesmateriaal bevatten van OSM Software. Als
-de uitvoering 2017-2018 sem 2 klaar is, worden alle bestanden naar de
-Master gecommit.
-
-# Opmerkingen
-
--   De ICA-huisstijl maakt gebruik van het Helvetica Neue font. Zie
-    <https://work.han.nl/sites/ICA-OT/huisstijl/default.aspx> en klik op
-    *Lettertype*. Installeer dat font om de PFD's netjes te generen.
-
--   Installeer Pandoc, bij voorkeur de nieuwste versie (Linux-distro's
-    lopen achter, 2 feb 2018).
-
--   Installeer een Latex-converter (Op windows MikTex)
-
--   Installeer de Latex templates van ICA-docs
-    (<https://git.icaprojecten.nl/stash/projects/BL/repos/ica-docs/browse>)
-
 # Docker-image voor documentgeneratie
 
 In de folder `pandoc-docker` staat een dockerfile om de image op te
