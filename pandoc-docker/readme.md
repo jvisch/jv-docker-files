@@ -11,10 +11,11 @@ de image te genereren.
 
 2.  Genereer met Docker build de image
 
-         cd pandoc-docker\
          docker build -t jv/pandoc-docker .
 
-    de optie `-t jv/pandoc-docker` mag hernoemd worden, maar is de name
+    of roep `make` aan als je Make hebt geïnstalleerd.
+
+    De optie `-t jv/pandoc-docker` mag hernoemd worden, maar is de name
     van de image die je nodig hebt bij het runnen.
 
 3.  Genereren van documentatie.
@@ -45,3 +46,5 @@ de image te genereren.
     Er wordt dan een terminal geopend en kun je pandoc, make, wat dan
     ook aanroepen om snel wat uit te proberen.
 
+5.  PlantUML is opgenomen met een filter om de diagrammen te genereren,
+    zie <https://github.com/timofurrer/pandoc-plantuml-filter>
