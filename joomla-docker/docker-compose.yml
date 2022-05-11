@@ -1,0 +1,42 @@
+version: '3.1'
+
+# http://localhost:8080 -> joomla (site)
+# http://localhost:8081 -> phpmyadmin
+
+# data is stored in volumes, so data is preserved after `docker compose down`
+# to fully remove use `docker compose down --volumes`
+
+services:
+  joomla:
+    image: joomla
+    depends_on:
+      - joomladb
+    ports:
+      - 8080:80
+    environment:
+      JOOMLA_DB_HOST: joomladb
+      JOOMLA_DB_PASSWORD: example
+    volumes:
+      - web:/var/www/html
+
+  joomladb:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - database:/var/lib/mysql
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - joomladb
+    environment:
+      PMA_HOST: joomladb
+      PMA_USER: root
+      PMA_PASSWORD: example
+    ports:
+      - "8081:80"
+
+volumes:
+  database:
+  web:
