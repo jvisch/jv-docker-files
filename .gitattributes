@@ -12,5 +12,3 @@
 # in Unix via a file share from Windows, the scripts will work.
 *.sh text eol=lf
 
-# force as binary
-*.jar binary
