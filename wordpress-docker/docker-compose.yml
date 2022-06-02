@@ -1,0 +1,47 @@
+version: '3.1'
+
+# http://localhost:8080 -> wordpress (site)
+# http://localhost:8081 -> phpmyadmin
+
+# data is stored in volumes, so data is preserved after `docker compose down`
+# to fully remove use `docker compose down --volumes`
+
+services:
+  wordpress:
+    image: wordpress
+    depends_on:
+      - db
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+    volumes:
+      - web:/var/www/html
+
+  db:
+    image: mysql:5
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - database:/var/lib/mysql
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_USER: exampleuser
+      PMA_PASSWORD: examplepass
+    ports:
+      - "8081:80"
+
+volumes:
+  database:
+  web:
