@@ -17,7 +17,7 @@ Run in this folder: `docker build --tag jv/pdf-images .`
 
 `docker run -ti -v "<working_folder>:/sources/" --rm jv/pdf-images`
 
-Bijvoorbeeld, alle pdf-documenten in de huidige folder
+For example, all pdf-documenten in the current folder
 
 -   Windows powershell, Linux, Mac
 
