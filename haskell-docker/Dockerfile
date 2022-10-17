@@ -1,9 +1,6 @@
-FROM alpine
+FROM haskell
 
-RUN  apk update && apk upgrade
-RUN apk add ghc
-
-# For newlines in ghci 
-ENV TERM=dumb
+# RUN apt update && apt upgrade -y
 
 WORKDIR /sources/
+ENTRYPOINT [ "runhaskell" ]
