@@ -2,15 +2,17 @@ version: '3.1'
 
 # http://localhost:8080 -> joomla (site)
 # http://localhost:8081 -> phpmyadmin
+# http://lcoalhost:8025 -> mailhog (client)
 
 # data is stored in volumes, so data is preserved after `docker compose down`
 # to fully remove use `docker compose down --volumes`
 
 services:
   joomla:
-    image: joomla
+    image: joomla:latest
     depends_on:
       - joomladb
+      - mailhog
     ports:
       - 8080:80
     environment:
@@ -36,6 +38,12 @@ services:
       PMA_PASSWORD: example
     ports:
       - "8081:80"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      # - 1025:1025 # enable als je van buitenaf wil mailen
+      - 8025:8025
 
 volumes:
   database:
