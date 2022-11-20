@@ -163,13 +163,7 @@ VOLUME /var/www/html
 #jv ENTRYPOINT ["/entrypoint.sh"]
 
 
-
-CMD ["apache2-foreground"]
-
 #JV Install php debugger
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
 
-COPY "./docker-php-ext-xdebug.ini" "/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini"
-
-COPY "./backup-files/*" "/var/www/html/"
