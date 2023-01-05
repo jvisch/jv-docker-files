@@ -42,6 +42,11 @@ services:
     ports:
       - "8081:80"
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      # - 1025:1025 # enable als je van buitenaf wil mailen
+      - 8025:8025
 volumes:
   database:
   web:
