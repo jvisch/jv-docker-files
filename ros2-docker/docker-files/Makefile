@@ -1,13 +1,10 @@
-SUBDIRS += base-image
-SUBDIRS += foxy-ros-base
-SUBDIRS += foxy-desktop
-SUBDIRS += galactic-ros-base
-SUBDIRS += galactic-desktop
+# OPTIONS += --progress plain
 
-all: $(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -C $@ $(MAKECMDGOALS)
+IMAGE_TAG := humble-desktop
 
-.PHONY: all $(SUBDIRS)
+all: 
+	docker build --tag jvr/ros2:$(IMAGE_TAG)  $(OPTIONS) . 
 
-clean: $(SUBDIRS)
+clean:
+	-docker image rm jvr/ros2:$(IMAGE_TAG)
+	-docker image prune -f
