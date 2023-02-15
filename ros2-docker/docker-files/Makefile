@@ -1,6 +1,6 @@
 # OPTIONS += --progress plain
 
-IMAGE_TAG := humble-desktop
+IMAGE_TAG := humble
 
 all: 
 	docker build --tag jvr/ros2:$(IMAGE_TAG)  $(OPTIONS) . 

@@ -1,4 +1,4 @@
-FROM jvr/ros2:humble-ros-base
+FROM jvr/ros2:humble
 
 COPY ./entrypoint.sh /
 RUN chmod +x /entrypoint.sh
