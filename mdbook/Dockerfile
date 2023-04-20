@@ -1,8 +1,6 @@
-FROM alpine
+FROM rust
 
-RUN apk update && apk upgrade
-RUN apk update && apk add mdbook
-RUN apk update && apk add git
+RUN cargo install mdbook
+RUN cargo install mdbook-linkcheck
 
 WORKDIR /sources/
-
