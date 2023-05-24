@@ -1,0 +1,3 @@
+[submodule "ccloc/ccloc"]
+	path = ccloc/ccloc
+	url = ssh://git@bitbucket.aimsites.nl:7999/~chris.vanuffelen_han.nl/ccloc.git
