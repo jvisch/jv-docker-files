@@ -1,0 +1,56 @@
+version: '3.1'
+
+# http://localhost:8080 -> joomla (site)
+# http://localhost:8081 -> phpmyadmin
+# http://lcoalhost:8025 -> mailhog (client)
+
+# data is stored in volumes, so data is preserved after `docker compose down`
+# to fully remove use `docker compose down --volumes`
+
+services:
+  joomla:
+    platform: "linux/amd64"
+    build:
+      dockerfile: Dockerfile-joomla
+    depends_on:
+      - joomladb
+      - mailhog
+    ports:
+      - 8080:80
+    environment:
+      JOOMLA_DB_HOST: joomladb
+      JOOMLA_DB_PASSWORD: example
+    volumes:
+      - web:/var/www/html
+      - ./backup-files/:/backup/
+      - ./setup-files/:/setup/
+    entrypoint: /setup/bootstrap.sh
+
+  joomladb:
+    image: mariadb:10.6.15-focal
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+    volumes:
+      - database:/var/lib/mysql
+    command: "--join_buffer_size=2097152 --join_buffer_space_limit=2097152 --join_cache_level=2 --max_join_size=67108864"
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - joomladb
+    environment:
+      PMA_HOST: joomladb
+      PMA_USER: root
+      PMA_PASSWORD: example
+    ports:
+      - "8081:80"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      # - 1025:1025
+      - 8025:8025
+
+volumes:
+  database:
+  web:

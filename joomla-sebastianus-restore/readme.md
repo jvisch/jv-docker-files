@@ -1,0 +1,1 @@
+Place Akeeba backup file in `./backup-files`/ hit <http://localhost:8080/kickstart.php>.
