@@ -13,4 +13,6 @@ linux:
 
 clean:
 	-docker image rm $(IMAGE_TAG)
+	-docker image rm $(IMAGE_TAG):$(LINUX_VERSION)
 	-docker image prune -f
+	-docker system prune -f

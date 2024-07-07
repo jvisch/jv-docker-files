@@ -43,6 +43,10 @@ ARG VERSION=3.0.1
 RUN wget -O pandoc.deb https://github.com/jgm/pandoc/releases/download/${VERSION}/pandoc-${VERSION}-1-amd64.deb
 RUN dpkg -i pandoc.deb
 
+# Workaround for "error: externally-managed-environment"
+# https://elliottback.medium.com/python-this-environment-is-externally-managed-error-and-docker-6062aac20a6e
+RUN rm /usr/lib/python*/EXTERNALLY-MANAGED
+
 # Python filters
 RUN pip install pandocfilters
 
