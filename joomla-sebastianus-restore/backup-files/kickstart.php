@@ -4,7 +4,7 @@
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13,7 +13,7 @@
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -26,11 +26,16 @@
 define('KICKSTART', 1);
 
 define('KICKSTART_MIN_PHP', '5.6.0');
-define('KICKSTART_RECOMMENDED_PHP', '7.4.0');
+define('KICKSTART_RECOMMENDED_PHP', '8.2.0');
+
+if (version_compare(PHP_VERSION, KICKSTART_MIN_PHP, 'lt'))
+{
+	die(sprintf('This script requires PHP %s or later (%s recommended). You are using %s.', KICKSTART_MIN_PHP, KICKSTART_RECOMMENDED_PHP, PHP_VERSION));
+}
 
 if (!defined('VERSION'))
 {
-	define('VERSION', '7.1.2');
+	define('VERSION', '8.0.4');
 }
 
 if (!defined('KICKSTARTPRO'))
@@ -208,7 +213,7 @@ function importKickstartFeatures($directory, $prefixes = array('kickstart'))
 		// Op-code busting before loading the feature (in case it's self-modifying)
 		if (function_exists('opcache_invalidate'))
 		{
-			opcache_invalidate($directory . '/' . $filename);
+			opcache_invalidate($directory . '/' . $filename, true);
 		}
 
 		if (function_exists('apc_compile_file'))
@@ -238,7 +243,7 @@ importKickstartFeatures(KSROOTDIR);
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -409,7 +414,7 @@ function clearFileInOPCache($file)
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -427,29 +432,6 @@ abstract class AKAbstractObject
 	private $_errors = array();
 	/** @var    array    An array of warnings */
 	private $_warnings = array();
-
-	/**
-	 * Public constructor, makes sure we are instantiated only by the factory class
-	 */
-	public function __construct()
-	{
-		/*
-		// Assisted Singleton pattern
-		if(function_exists('debug_backtrace'))
-		{
-			$caller=debug_backtrace();
-			if(
-				($caller[1]['class'] != 'AKFactory') &&
-				($caller[2]['class'] != 'AKFactory') &&
-				($caller[3]['class'] != 'AKFactory') &&
-				($caller[4]['class'] != 'AKFactory')
-			) {
-				var_dump(debug_backtrace());
-				trigger_error("You can't create direct descendants of ".__CLASS__, E_USER_ERROR);
-			}
-		}
-		*/
-	}
 
 	/**
 	 * Get the most recent error message
@@ -687,7 +669,7 @@ abstract class AKAbstractObject
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -726,7 +708,7 @@ abstract class AKAbstractPart extends AKAbstractObject
 	 *
 	 * @var boolean
 	 */
-	protected $hasRan = false;
+	protected $hasRun = false;
 
 	/**
 	 * The name of the engine part (a.k.a. Domain), used in return table
@@ -1059,7 +1041,7 @@ abstract class AKAbstractPart extends AKAbstractObject
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -1109,14 +1091,6 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 
 	/** @var array Unwriteable files in these directories are always ignored and do not cause errors when not extracted */
 	protected $ignoreDirectories = array();
-
-	/**
-	 * Public constructor
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-	}
 
 	/**
 	 * Wakeup function, called whenever the class is unserialized
@@ -1177,8 +1151,6 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
 	 */
 	final protected function _prepare()
 	{
-		parent::__construct();
-
 		if (count($this->_parametersArray) > 0)
 		{
 			foreach ($this->_parametersArray as $key => $value)
@@ -1829,7 +1801,7 @@ abstract class AKAbstractUnarchiver extends AKAbstractPart
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -1898,7 +1870,7 @@ abstract class AKAbstractPostproc extends AKAbstractObject
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -1919,7 +1891,7 @@ abstract class AKAbstractPartObserver
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -2059,7 +2031,7 @@ class AKPostprocDirect extends AKAbstractPostproc
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -2087,8 +2059,6 @@ class AKPostprocFTP extends AKAbstractPostproc
 
 	public function __construct()
 	{
-		parent::__construct();
-
 		$this->useSSL  = AKFactory::get('kickstart.ftp.ssl', false);
 		$this->passive = AKFactory::get('kickstart.ftp.passive', true);
 		$this->host    = AKFactory::get('kickstart.ftp.host', '');
@@ -2426,6 +2396,25 @@ class AKPostprocFTP extends AKAbstractPostproc
 		}
 	}
 
+	public function __sleep()
+	{
+		if (!is_null($this->handle) && is_resource($this->handle))
+		{
+			@ftp_close($this->handle);
+		}
+
+		$this->handle = null;
+	}
+
+	public function __destruct()
+	{
+		if (!is_null($this->handle) && is_resource($this->handle))
+		{
+			@ftp_close($this->handle);
+		}
+	}
+
+
 	public function __wakeup()
 	{
 		$this->connect();
@@ -2686,7 +2675,7 @@ class AKPostprocFTP extends AKAbstractPostproc
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -2721,8 +2710,6 @@ class AKPostprocSFTP extends AKAbstractPostproc
 
 	public function __construct()
 	{
-		parent::__construct();
-
 		$this->host = AKFactory::get('kickstart.ftp.host', '');
 		$this->port = AKFactory::get('kickstart.ftp.port', 22);
 
@@ -3335,7 +3322,7 @@ class AKPostprocSFTP extends AKAbstractPostproc
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -3380,8 +3367,6 @@ class AKPostprocHybrid extends AKAbstractPostproc
 	 */
 	public function __construct()
 	{
-		parent::__construct();
-
 		$this->useFTP  = true;
 		$this->useSSL  = AKFactory::get('kickstart.ftp.ssl', false);
 		$this->passive = AKFactory::get('kickstart.ftp.passive', true);
@@ -3783,6 +3768,20 @@ class AKPostprocHybrid extends AKAbstractPostproc
 		}
 	}
 
+	public function __sleep()
+	{
+		if ($this->useFTP)
+		{
+			if (!is_null($this->_handle) && is_resource($this->_handle))
+			{
+				@ftp_close($this->_handle);
+			}
+		}
+
+		$this->_handle = null;
+	}
+
+
 	public function __destruct()
 	{
 		if ($this->useFTP)
@@ -4104,7 +4103,7 @@ class AKPostprocHybrid extends AKAbstractPostproc
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -4113,7 +4112,7 @@ class AKPostprocHybrid extends AKAbstractPostproc
  */
 class AKUnarchiverJPA extends AKAbstractUnarchiver
 {
-	protected $archiveHeaderData = array();
+	protected $archiveHeaderData = [];
 
 	protected function readArchiveHeader()
 	{
@@ -4136,15 +4135,15 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		// Fuzzy check for the start of archive.
 		debugMsg('Fuzzy checking for archive signature');
 
-		$sigFound = $this->fuzzySignatureSearch(array(
-			'JPA'
-		), 3);
+		$sigFound = $this->fuzzySignatureSearch([
+			'JPA',
+		], 3);
 
 		if (!$sigFound)
 		{
 			debugMsg('Cannot find a valid archive signature in the first 128Kb of the first part file');
 
-			$this->setError(AKText::_('ERR_NOT_A_JPA_FILE'));
+			$this->setError(AKText::sprintf('ERR_INVALID_ARCHIVE_LONG', 'jpa', 'j'));
 
 			return false;
 		}
@@ -4158,7 +4157,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		{
 			// Not a JPA file
 			debugMsg('Invalid archive signature');
-			$this->setError(AKText::_('ERR_NOT_A_JPA_FILE'));
+			$this->setError(AKText::sprintf('ERR_INVALID_ARCHIVE_LONG', 'jpa', 'j'));
 
 			return false;
 		}
@@ -4171,20 +4170,8 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		$bin_data    = fread($this->fp, 14);
 		$header_data = unpack('Cmajor/Cminor/Vcount/Vuncsize/Vcsize', $bin_data);
 
-		// Load any remaining header data (forward compatibility)
-		$rest_length = $header_length - 19;
-
-		if ($rest_length > 0)
-		{
-			$junk = fread($this->fp, $rest_length);
-		}
-		else
-		{
-			$junk = '';
-		}
-
 		// Temporary array with all the data we read
-		$temp = array(
+		$temp = [
 			'signature'        => $sig,
 			'length'           => $header_length,
 			'major'            => $header_data['major'],
@@ -4192,8 +4179,61 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			'filecount'        => $header_data['count'],
 			'uncompressedsize' => $header_data['uncsize'],
 			'compressedsize'   => $header_data['csize'],
-			'unknowndata'      => $junk
-		);
+			'unknowndata'      => '',
+		];
+
+		// Load additional header data
+		$rest_length = $header_length - 19;
+		$junk        = '';
+
+		while ($rest_length > 8)
+		{
+			// Read the extra length signature and size
+			$extraSig    = fread($this->fp, 4);
+			$binData     = fread($this->fp, 2);
+			$extraHeader = unpack('vlength', $binData);
+			$length      = $extraHeader['length'] - 2;
+
+			$rest_length -= 6 + $length;
+
+			switch ($extraSig)
+			{
+				case "\x4A\x50\x01\x01":
+					$moreBinData        = fread($this->fp, $length);
+					$moreExtraHeader    = unpack('vtotalParts', $moreBinData);
+					$temp['totalParts'] = $moreExtraHeader['totalParts'];
+					break;
+
+				case "\x4A\x50\x01\x02":
+					$moreBinData              = fread($this->fp, $length);
+
+					// Only decode on 64-bit versions of PHP
+					if (PHP_INT_SIZE >= 8)
+					{
+						$moreExtraHeader          = unpack('Puncompressed/Pcompressed', $moreBinData);
+						$header_data['uncsize']   = $moreExtraHeader['uncompressed'];
+						$header_data['csize']     = $moreExtraHeader['compressed'];
+						$temp['uncompressedsize'] = $moreExtraHeader['uncompressed'];
+						$temp['compressedsize']   = $moreExtraHeader['compressed'];
+					}
+
+					break;
+
+				default:
+					$moreBinData = fread($this->fp, $length);
+					$junk        .= $extraSig . $binData . $moreBinData;
+					break;
+			}
+		}
+
+		if ($rest_length > 0)
+		{
+			$junk .= fread($this->fp, $rest_length);
+		}
+		else
+		{
+			$junk .= '';
+		}
 
 		// Array-to-object conversion
 		foreach ($temp as $key => $value)
@@ -4207,7 +4247,8 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		debugMsg('Minor               : ' . $header_data['minor']);
 		debugMsg('File count          : ' . $header_data['count']);
 		debugMsg('Uncompressed size   : ' . $header_data['uncsize']);
-		debugMsg('Compressed size	  : ' . $header_data['csize']);
+		debugMsg('Compressed size     : ' . $header_data['csize']);
+		debugMsg('Total Parts         : ' . (isset($header_data['totalParts']) ? $header_data['totalParts'] : '1'));
 
 		$this->currentPartOffset = @ftell($this->fp);
 
@@ -4245,12 +4286,33 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			if ($this->isEOF(true))
 			{
 				// This file is finished; make sure it's the last one
-				$this->nextFile();
+				$gotNextFile = $this->nextFile();
+
+				if (!$gotNextFile && $this->getState() !== 'postrun')
+				{
+					debugMsg(sprintf('Cannot open file %s for part #%d', $this->archiveList[$this->currentPartNumber] ?: '(unknown)', $this->currentPartNumber));
+
+					$this->setError(AKText::sprintf(
+						'INVALID_FILE_HEADER_OFFSET_ZERO',
+						$this->archiveList[$this->currentPartNumber] ?: '(unknown)',
+						$this->currentPartNumber,
+						'jpa',
+						'j'
+					));
+
+					return false;
+				}
 
 				if (!$this->isEOF(false))
 				{
 					debugMsg('Invalid file signature before end of archive encountered');
-					$this->setError(AKText::sprintf('INVALID_FILE_HEADER', $this->currentPartNumber, $this->currentPartOffset));
+					$this->setError(AKText::sprintf(
+						'INVALID_FILE_HEADER',
+						$this->currentPartNumber,
+						$this->currentPartOffset,
+						'jpa',
+						'j'
+					));
 
 					return false;
 				}
@@ -4279,8 +4341,22 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 
 				if ($screwed)
 				{
-					debugMsg('Invalid file block signature');
 					// This is not a file block! The archive is corrupt.
+					debugMsg('Invalid file block signature');
+
+					if (count($this->archiveList) > 1)
+					{
+						$this->setError(AKText::sprintf(
+							'INVALID_FILE_HEADER_MULTIPART',
+							$this->currentPartNumber,
+							$this->currentPartOffset,
+							'jpa',
+							'j'
+						));
+
+						return false;
+					}
+
 					$this->setError(AKText::sprintf('INVALID_FILE_HEADER', $this->currentPartNumber, $this->currentPartOffset));
 
 					return false;
@@ -4337,34 +4413,45 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			// Start reading the extra fields
 			while ($restBytes >= 4)
 			{
-				$extra_header_data = fread($this->fp, 4);
-				$extra_header      = unpack('vsignature/vlength', $extra_header_data);
-				$restBytes -= 4;
+				$extra_header_data      = fread($this->fp, 4);
+				$extra_header           = unpack('vsignature/vlength', $extra_header_data);
+				$restBytes              -= 4;
 				$extra_header['length'] -= 4;
 
-				switch ($extra_header['signature'])
+				if ($extra_header['length'] > 0)
 				{
-					case 256:
-						// File modified timestamp
-						if ($extra_header['length'] > 0)
-						{
-							$bindata = fread($this->fp, $extra_header['length']);
-							$restBytes -= $extra_header['length'];
+					switch ($extra_header['signature'])
+					{
+						case 256:
+							// File modified timestamp
+							$bindata                     = fread($this->fp, $extra_header['length']);
+							$restBytes                   -= $extra_header['length'];
 							$timestamps                  = unpack('Vmodified', substr($bindata, 0, 4));
 							$filectime                   = $timestamps['modified'];
 							$this->fileHeader->timestamp = $filectime;
-						}
-						break;
+							break;
 
-					default:
-						// Unknown field
-						if ($extra_header['length'] > 0)
-						{
-							$junk = fread($this->fp, $extra_header['length']);
+						case 512:
+							$bindata                   = fread($this->fp, $extra_header['length']);
+							$restBytes                 -= $extra_header['length'];
+
+							// Only decode on 64-bit versions of PHP
+							if (PHP_INT_SIZE >= 8)
+							{
+								$sizes                     = unpack('Pclen/Punclen', $bindata);
+								$header_data['compsize']   = $sizes['clen'];
+								$header_data['uncompsize'] = $sizes['unclen'];
+							}
+							break;
+
+						default:
+							// Unknown field
+							$junk      = fread($this->fp, $extra_header['length']);
 							$restBytes -= $extra_header['length'];
-						}
-						break;
+							break;
+					}
 				}
+
 			}
 
 			if ($restBytes > 0)
@@ -4660,8 +4747,8 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 			$toReadBytes     = ($leftBytes > $this->chunkSize) ? $this->chunkSize : $leftBytes;
 			$mydata          = $this->fread($this->fp, $toReadBytes);
 			$reallyReadBytes = akstringlen($mydata);
-			$data .= $mydata;
-			$leftBytes -= $reallyReadBytes;
+			$data            .= $mydata;
+			$leftBytes       -= $reallyReadBytes;
 
 			if ($reallyReadBytes < $toReadBytes)
 			{
@@ -4765,10 +4852,10 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 		// Loop while there's data to read and enough time to do it
 		while (($leftBytes > 0) && ($timer->getTimeLeft() > 0))
 		{
-			$toReadBytes     = ($leftBytes > $this->chunkSize) ? $this->chunkSize : $leftBytes;
-			$data            = $this->fread($this->fp, $toReadBytes);
-			$reallyReadBytes = akstringlen($data);
-			$leftBytes -= $reallyReadBytes;
+			$toReadBytes          = ($leftBytes > $this->chunkSize) ? $this->chunkSize : $leftBytes;
+			$data                 = $this->fread($this->fp, $toReadBytes);
+			$reallyReadBytes      = akstringlen($data);
+			$leftBytes            -= $reallyReadBytes;
 			$this->dataReadLength += $reallyReadBytes;
 
 			if ($reallyReadBytes < $toReadBytes)
@@ -4872,7 +4959,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
 				// Yeap. Read from the next file
 				$this->nextFile();
 				$bytes_left = $this->fileHeader->compressed - akstringlen($zipData);
-				$zipData .= $this->fread($this->fp, $bytes_left);
+				$zipData    .= $this->fread($this->fp, $bytes_left);
 			}
 			else
 			{
@@ -4912,7 +4999,7 @@ class AKUnarchiverJPA extends AKAbstractUnarchiver
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -4959,7 +5046,7 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 		{
 			debugMsg('Cannot find a valid archive signature in the first 128Kb of the first part file');
 
-			$this->setError(AKText::_('ERR_CORRUPT_ARCHIVE'));
+			$this->setError(AKText::sprintf('ERR_INVALID_ARCHIVE_LONG', 'zip', 'z'));
 
 			return false;
 		}
@@ -4989,7 +5076,7 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 		if (!in_array($headerData['sig'], $multiPartSigs))
 		{
 			debugMsg('Invalid header signature ' . dechex($headerData['sig']));
-			$this->setError(AKText::_('ERR_CORRUPT_ARCHIVE'));
+			$this->setError(AKText::sprintf('ERR_INVALID_ARCHIVE_LONG', 'zip', 'z'));
 
 			return false;
 		}
@@ -5013,7 +5100,7 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 		if ($this->isEOF(true))
 		{
 			debugMsg('Opening next archive part');
-			$this->nextFile();
+			$gotNextFile = $this->nextFile();
 		}
 
 		$this->currentPartOffset = ftell($this->fp);
@@ -5043,7 +5130,7 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 			{
 				debugMsg('EOF before reading header');
 
-				$this->nextFile();
+				$gotNextFile = $this->nextFile();
 			}
 		}
 
@@ -5070,8 +5157,56 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
 			}
 			else
 			{
+				if (isset($gotNextFile) && !$gotNextFile && $this->getState() !== 'postrun')
+				{
+					debugMsg(sprintf('Cannot open file %s for part #%d', $this->archiveList[$this->currentPartNumber] ?: '(unknown)', $this->currentPartNumber));
+
+					$this->setError(AKText::sprintf(
+						'INVALID_FILE_HEADER_OFFSET_ZERO',
+						$this->archiveList[$this->currentPartNumber] ?: '(unknown)',
+						$this->currentPartNumber,
+						'zip',
+						'z'
+					));
+
+					return false;
+				}
+
+				if ($this->currentPartOffset === 0 && $this->currentPartNumber > 0)
+				{
+					$this->setError(AKText::sprintf(
+						'INVALID_FILE_HEADER_MULTIPART',
+						$this->currentPartNumber,
+						$this->currentPartOffset,
+						'jpa',
+						'j'
+					));
+
+					return false;
+				}
+
 				debugMsg('Invalid signature ' . dechex($headerData['sig']) . ' at ' . ftell($this->fp));
-				$this->setError(AKText::_('ERR_CORRUPT_ARCHIVE'));
+
+				if (count($this->archiveList) > 1)
+				{
+					$this->setError(AKText::sprintf(
+						'INVALID_FILE_HEADER_MULTIPART',
+						$this->currentPartNumber,
+						$this->currentPartOffset,
+						'zip',
+						'z'
+					));
+
+					return false;
+				}
+
+				$this->setError(AKText::sprintf(
+					'INVALID_FILE_HEADER',
+					$this->currentPartNumber,
+					$this->currentPartOffset,
+					'zip',
+					'z'
+				));
 
 				return false;
 			}
@@ -5260,7 +5395,7 @@ class AKUnarchiverZIP extends AKUnarchiverJPA
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -5320,8 +5455,6 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 
 	public function __construct()
 	{
-		parent::__construct();
-
 		$this->password = AKFactory::get('kickstart.jps.password', '');
 	}
 
@@ -5362,7 +5495,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 		{
 			debugMsg('Cannot find a valid archive signature in the first 128Kb of the first part file');
 
-			$this->setError(AKText::_('ERR_NOT_A_JPS_FILE'));
+			$this->setError(AKText::sprintf('ERR_INVALID_ARCHIVE_LONG', 'jps', 'j'));
 
 			return false;
 		}
@@ -5374,8 +5507,8 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 
 		if ($sig != 'JPS')
 		{
-			// Not a JPA file
-			$this->setError(AKText::_('ERR_NOT_A_JPS_FILE'));
+			// Not a JPS file
+			$this->setError(AKText::sprintf('ERR_INVALID_ARCHIVE_LONG', 'jps', 'j'));
 
 			return false;
 		}
@@ -5459,7 +5592,23 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 			if ($this->isEOF(true))
 			{
 				// This file is finished; make sure it's the last one
-				$this->nextFile();
+				$gotNextFile = $this->nextFile();
+
+				if (!$gotNextFile && $this->getState() !== 'postrun')
+				{
+					debugMsg(sprintf('Cannot open file %s for part #%d', $this->archiveList[$this->currentPartNumber] ?: '(unknown)', $this->currentPartNumber));
+
+					$this->setError(AKText::sprintf(
+						'INVALID_FILE_HEADER_OFFSET_ZERO',
+						$this->archiveList[$this->currentPartNumber] ?: '(unknown)',
+						$this->currentPartNumber,
+						'jps',
+						'j'
+					));
+
+					return false;
+				}
+
 				if (!$this->isEOF(false))
 				{
 					$this->setError(AKText::sprintf('INVALID_FILE_HEADER', $this->currentPartNumber, $this->currentPartOffset));
@@ -5479,7 +5628,26 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
 					return false;
 				}
 
-				$this->setError(AKText::sprintf('INVALID_FILE_HEADER', $this->currentPartNumber, $this->currentPartOffset));
+				if (count($this->archiveList) > 1)
+				{
+					$this->setError(AKText::sprintf(
+						'INVALID_FILE_HEADER_MULTIPART',
+						$this->currentPartNumber,
+						$this->currentPartOffset,
+						'jps',
+						'j'
+					));
+
+					return false;
+				}
+
+				$this->setError(AKText::sprintf(
+					'INVALID_FILE_HEADER',
+					$this->currentPartNumber,
+					$this->currentPartOffset,
+					'jps',
+					'j'
+				));
 
 				return false;
 			}
@@ -6169,7 +6337,7 @@ class AKUnarchiverJPS extends AKUnarchiverJPA
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -6191,8 +6359,6 @@ class AKCoreTimer extends AKAbstractObject
 	 */
 	public function __construct()
 	{
-		parent::__construct();
-
 		// Initialize start time
 		$this->start_time = $this->microtime_float();
 
@@ -6365,7 +6531,7 @@ class AKCoreTimer extends AKAbstractObject
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -6494,7 +6660,7 @@ class AKUtilsHtaccess extends AKAbstractObject
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -6599,7 +6765,7 @@ class AKUtilsLister extends AKAbstractObject
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -7194,7 +7360,8 @@ class AKUtilsZapper extends AKAbstractPart
 		if (defined('KICKSTART'))
 		{
 			$langDir        = defined('KSLANGDIR') ? KSLANGDIR : KSROOTDIR;
-            $iniFilePattern = basename(KSSELFNAME, '.php') . '.*.ini';
+			$myName         = defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__);
+			$iniFilePattern = basename($myName, '.php') . '.*.ini';
 
 			if ($langDir != KSROOTDIR)
             {
@@ -7401,7 +7568,7 @@ function runZapper(AKAbstractPartObserver $observer = null)
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -7415,9 +7582,11 @@ class AKText extends AKAbstractObject
 	 *
 	 * @var array
 	 */
-	private $default_translation = array(
+	private $default_translation = [
+		'AUTOMODEON'                      => 'Auto-mode enabled',
 		'ERR_NOT_A_JPA_FILE'              => 'The file is not a JPA archive',
 		'ERR_CORRUPT_ARCHIVE'             => 'The archive file is corrupt, truncated or archive parts are missing',
+		'ERR_INVALID_ARCHIVE_LONG'        => 'The archive file appears to be corrupt, or archive parts are missing. If your backups consists of multiple files, please make sure that you have downloaded all the archive part files (files with the same name and extensions .%s, .%s01, .%2$s02…). Please make sure to download <em>and</em> upload files using SFTP, or FTP in Binary transfer mode and do check that their file size matches the sizes reported in the Manage Backups page of Akeeba Backup / Akeeba Solo.',
 		'ERR_INVALID_LOGIN'               => 'Invalid login',
 		'COULDNT_CREATE_DIR'              => 'Could not create %s folder',
 		'COULDNT_WRITE_FILE'              => 'Could not open %s for writing.',
@@ -7460,23 +7629,23 @@ class AKText extends AKAbstractObject
 		'SFTP_CONNECTION_FAILURE'         => 'The SFTP Connection Failed',
 		'FTP_TEMPDIR_WRITABLE'            => 'The temporary directory is writable.',
 		'FTP_TEMPDIR_UNWRITABLE'          => 'The temporary directory is not writable. Please check the permissions.',
-		'FTPBROWSER_ERROR_HOSTNAME'       => "Invalid FTP host or port",
-		'FTPBROWSER_ERROR_USERPASS'       => "Invalid FTP username or password",
-		'FTPBROWSER_ERROR_NOACCESS'       => "Directory doesn't exist or you don't have enough permissions to access it",
-		'FTPBROWSER_ERROR_UNSUPPORTED'    => "Sorry, your FTP server doesn't support our FTP directory browser.",
-		'FTPBROWSER_LBL_GOPARENT'         => "&lt;up one level&gt;",
+		'FTP_BROWSE'                      => 'Browse',
 		'FTPBROWSER_LBL_INSTRUCTIONS'     => 'Click on a directory to navigate into it. Click on OK to select that directory, Cancel to abort the procedure.',
+		'FTPBROWSER_ERROR_HOSTNAME'       => 'Invalid FTP host or port',
+		'FTPBROWSER_ERROR_USERPASS'       => 'Invalid FTP username or password',
+		'FTPBROWSER_ERROR_NOACCESS'       => 'Directory doesn\'t exist or you don\'t have enough permissions to access it',
+		'FTPBROWSER_ERROR_UNSUPPORTED'    => 'Sorry, your FTP server doesn\'t support our FTP directory browser.',
+		'FTPBROWSER_LBL_GOPARENT'         => '&lt;up one level&gt;',
 		'FTPBROWSER_LBL_ERROR'            => 'An error occurred',
 		'SFTP_NO_SSH2'                    => 'Your web server does not have the SSH2 PHP module, therefore can not connect to SFTP servers.',
 		'SFTP_NO_FTP_SUPPORT'             => 'Your SSH server does not allow SFTP connections',
 		'SFTP_WRONG_USER'                 => 'Wrong SFTP username or password',
 		'SFTP_WRONG_STARTING_DIR'         => 'You must supply a valid absolute path',
-		'SFTPBROWSER_ERROR_NOACCESS'      => "Directory doesn't exist or you don't have enough permissions to access it",
+		'SFTPBROWSER_ERROR_NOACCESS'      => 'Directory doesn\'t exist or you don\'t have enough permissions to access it',
 		'SFTP_COULDNT_UPLOAD'             => 'Could not upload %s',
 		'SFTP_CANT_CREATE_DIR'            => 'Could not create directory %s',
 		'UI-ROOT'                         => '&lt;root&gt;',
 		'CONFIG_UI_FTPBROWSER_TITLE'      => 'FTP Directory Browser',
-		'FTP_BROWSE'                      => 'Browse',
 		'BTN_CHECK'                       => 'Check',
 		'BTN_RESET'                       => 'Reset',
 		'BTN_TESTFTPCON'                  => 'Test FTP connection',
@@ -7486,7 +7655,6 @@ class AKText extends AKAbstractObject
 		'FINE_TUNE'                       => 'Fine tune',
 		'MIN_EXEC_TIME'                   => 'Minimum execution time:',
 		'MAX_EXEC_TIME'                   => 'Maximum execution time:',
-		'TIME_SETTINGS_HELP'              => "Increase the minimum to 3 if you get AJAX errors. Increase the maximum to 10 for faster extraction, decrease back to 5 if you get AJAX errors. Try minimum 5, maximum 1 (not a typo!) if you keep getting AJAX errors.",
 		'SECONDS_PER_STEP'                => 'seconds per step',
 		'EXTRACT_FILES'                   => 'Extract files',
 		'BTN_START'                       => 'Start',
@@ -7500,32 +7668,58 @@ class AKText extends AKAbstractObject
 		'WARNINGS'                        => 'Extraction Warnings',
 		'ERROR_OCCURED'                   => 'An error occurred',
 		'STEALTH_MODE'                    => 'Stealth mode',
-		'STEALTH_MODE_HELP'               => 'When enabled, only visitors from your IP address will be able to see the site until the restoration is complete. Everyone else will be redirected to and only see the URL above. Your server must see the real IP of the visitor (this is controlled by your host, not you or us).',
 		'STEALTH_URL'                     => 'HTML file to show to web visitors',
 		'ERR_NOT_A_JPS_FILE'              => 'The file is not a JPA archive',
 		'ERR_INVALID_JPS_PASSWORD'        => 'The password you gave is wrong or the archive is corrupt',
 		'JPS_PASSWORD'                    => 'Archive Password (for JPS files)',
-		'INVALID_FILE_HEADER'             => 'Invalid header in archive file, part %s, offset %s',
+		'INVALID_FILE_HEADER_OFFSET_ZERO' => 'Cannot open the file %s for reading. This is part #%d of your backup archive which consists of multiple files (files with the same name and extensions .%s, .%s01, .%4$s02…). Please make sure that you have all of these files in the same folder as Kickstart.',
+		'INVALID_FILE_HEADER'             => 'Invalid header in archive file, part %s, offset %s. Please make sure to download <em>and</em> upload backup archive files using SFTP, or FTP in Binary transfer mode and do check that their file size matches the sizes reported in the Manage Backups page of Akeeba Backup / Akeeba Solo.',
+		'INVALID_FILE_HEADER_MULTIPART'   => 'Invalid header in archive file, part %s, offset %s. Your backup archive consists of multiple files (files with the same name and extensions .%s, .%s01, .%4$s02…). Either some files are missing, or they are corrupt or truncated. You will need all of these files to be present in the same directory. Please make sure to download <em>and</em> upload backup archive files using SFTP, or FTP in Binary transfer mode and do check that their file size matches the sizes reported in the Manage Backups page of Akeeba Backup / Akeeba Solo.',
+		'UPDATE_HEADER'                   => 'An updated version of Akeeba Kickstart (<span id="update-version">unknown</span>) is available!',
+		'UPDATE_NOTICE'                   => 'You are advised to always use the latest version of Akeeba Kickstart available. Older versions may be subject to bugs and will not be supported.',
+		'UPDATE_DLNOW'                    => 'Download now',
+		'UPDATE_MOREINFO'                 => 'More information',
 		'NEEDSOMEHELPKS'                  => 'Want some help to use this tool? Read this first:',
-		'QUICKSTART'                      => 'Quick Start Guide',
+		'QUICKSTART'                      => 'Using Kickstart',
 		'CANTGETITTOWORK'                 => 'Can\'t get it to work? Click me!',
 		'NOARCHIVESCLICKHERE'             => 'No archives detected. Click here for troubleshooting instructions.',
 		'POSTRESTORATIONTROUBLESHOOTING'  => 'Something not working after the restoration? Click here for troubleshooting instructions.',
 		'IGNORE_MOST_ERRORS'              => 'Ignore most errors',
+		'TIME_SETTINGS_HELP'              => 'Increase the minimum to 3 if you get AJAX errors. Increase the maximum to 10 for faster extraction, decrease back to 5 if you get AJAX errors. Try minimum 5, maximum 1 (not a typo!) if you keep getting AJAX errors.',
+		'STEALTH_MODE_HELP'               => 'When enabled, only visitors from your IP address will be able to see the site until the restoration is complete. Everyone else will be redirected to and only see the URL above. Your server must see the real IP of the visitor (this is controlled by your host, not you or us).',
+		'RENAME_FILES_HELP'               => 'Renames .htaccess, web.config, php.ini and .user.ini contained in the archive while extracting. Files are renamed with a .bak extension. The file names are restored when you click on Clean Up.',
+		'RESTORE_PERMISSIONS_HELP'        => 'Applies the file permissions (but NOT file ownership) which was stored at backup time. Only works with JPA and JPS archives. Does not work on Windows (PHP does not offer such a feature).',
+		'EXTRACT_LIST'                    => 'Files to extract',
+		'EXTRACT_LIST_HELP'               => 'Enter a file path such as <code>images/cat.png</code> or shell pattern such as <code>images/*.png</code> on each line. Only files matching this list will be written to disk. Leave empty to extract everything (default).',
+		'AKS3_IMPORT'                     => 'Import from Amazon S3',
+		'AKS3_TITLE_STEP1'                => 'Connect to Amazon S3',
+		'AKS3_ACCESS'                     => 'Access Key',
+		'AKS3_SECRET'                     => 'Secret Key',
+		'AKS3_CONNECT'                    => 'Connect to Amazon S3',
+		'AKS3_CANCEL'                     => 'Cancel import',
+		'AKS3_TITLE_STEP2'                => 'Select your Amazon S3 bucket',
+		'AKS3_BUCKET'                     => 'Bucket',
+		'AKS3_LISTCONTENTS'               => 'List contents',
+		'AKS3_TITLE_STEP3'                => 'Select archive to import',
+		'AKS3_FOLDERS'                    => 'Folders',
+		'AKS3_FILES'                      => 'Archive Files',
+		'AKS3_TITLE_STEP4'                => 'Importing...',
+		'AKS3_DO_NOT_CLOSE'               => 'Please do not close this window while your backup archives are being imported',
+		'AKS3_TITLE_STEP5'                => 'Import is complete',
+		'AKS3_BTN_RELOAD'                 => 'Reload Kickstart',
 		'WRONG_FTP_PATH2'                 => 'Wrong FTP initial directory - the directory doesn\'t correspond to your site\'s web root',
 		'ARCHIVE_DIRECTORY'               => 'Archive directory:',
 		'RELOAD_ARCHIVES'                 => 'Reload',
 		'CONFIG_UI_SFTPBROWSER_TITLE'     => 'SFTP Directory Browser',
 		'ERR_COULD_NOT_OPEN_ARCHIVE_PART' => 'Could not open archive part file %s for reading. Check that the file exists, is readable by the web server and is not in a directory made out of reach by chroot, open_basedir restrictions or any other restriction put in place by your host.',
-		'RENAME_FILES'                    => 'Rename server configuration files',
-		'RENAME_FILES_HELP'               => 'Renames .htaccess, web.config, php.ini and .user.ini contained in the archive while extracting. Files are renamed with a .bak extension. The file names are restored when you click on Clean Up.',
+		'RENAME_FILES'                    => 'Rename server configuration files before extraction',
+		'BTN_SHOW_FINE_TUNE'              => 'Show advanced options (for experts)',
 		'RESTORE_PERMISSIONS'             => 'Restore file permissions',
-		'RESTORE_PERMISSIONS_HELP'        => 'Applies the file permissions (but NOT file ownership) which was stored at backup time. Only works with JPA and JPS archives. Does not work on Windows (PHP does not offer such a feature).',
-		'EXTRACT_LIST'                    => 'Files to extract',
-		'EXTRACT_LIST_HELP'               => 'Enter a file path such as <code>images/cat.png</code> or shell pattern such as <code>images/*.png</code> on each line. Only files matching this list will be written to disk. Leave empty to extract everything (default).',
 		'ZAPBEFORE'                       => 'Delete everything before extraction',
 		'ZAPBEFORE_HELP'                  => 'Tries to delete all existing files and folders under the directory where Kickstart is stored before extracting the backup archive. It DOES NOT take into account which files and folders exist in the backup archive. Files and folders deleted by this feature CAN NOT be recovered. <strong>WARNING! THIS MAY DELETE FILES AND FOLDERS WHICH DO NOT BELONG TO YOUR SITE. USE WITH EXTREME CAUTION. BY ENABLING THIS FEATURE YOU ASSUME ALL RESPONSIBILITY AND LIABILITY.</strong>',
-	);
+	];
+
+	/** END OF ARRAY — DO NOT EDIT OR REMOVE **/
 
 	/**
 	 * The array holding the translation keys
@@ -7559,60 +7753,15 @@ class AKText extends AKAbstractObject
 		}
 	}
 
-	private function loadTranslation($lang = null)
-	{
-		if (defined('KSLANGDIR'))
-		{
-			$dirname = KSLANGDIR;
-		}
-		else
-		{
-			$dirname = KSROOTDIR;
-		}
-
-		$myName = defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__);
-		$basename = basename($myName, '.php') . '.ini';
-
-		if (empty($lang))
-		{
-			$lang = $this->language;
-		}
-
-		$translationFilename = $dirname . DIRECTORY_SEPARATOR . $lang . '.' . $basename;
-		if (!@file_exists($translationFilename) && ($basename != 'kickstart.ini'))
-		{
-			$basename            = 'kickstart.ini';
-			$translationFilename = $dirname . DIRECTORY_SEPARATOR . $lang . '.' . $basename;
-		}
-		if (!@file_exists($translationFilename))
-		{
-			return;
-		}
-		$temp = self::parse_ini_file($translationFilename, false);
-
-		if (!is_array($this->strings))
-		{
-			$this->strings = array();
-		}
-		if (empty($temp))
-		{
-			$this->strings = array_merge($this->default_translation, $this->strings);
-		}
-		else
-		{
-			$this->strings = array_merge($this->strings, $temp);
-		}
-	}
-
 	/**
 	 * A PHP based INI file parser.
 	 *
 	 * Thanks to asohn ~at~ aircanopy ~dot~ net for posting this handy function on
 	 * the parse_ini_file page on http://gr.php.net/parse_ini_file
 	 *
-	 * @param    string $file             Filename to process
-	 * @param    bool   $process_sections True to also process INI sections
-	 * @param    bool   $rawdata          If true, the $file contains raw INI data, not a filename
+	 * @param   string  $file              Filename to process
+	 * @param   bool    $process_sections  True to also process INI sections
+	 * @param   bool    $rawdata           If true, the $file contains raw INI data, not a filename
 	 *
 	 * @return array An associative array of sections, keys and values
 	 * @access private
@@ -7628,24 +7777,24 @@ class AKText extends AKAbstractObject
 		else
 		{
 			$file = str_replace("\r", "", $file);
-			$ini = explode("\n", $file);
+			$ini  = explode("\n", $file);
 		}
 
 		if (!is_array($ini))
 		{
-			return array();
+			return [];
 		}
 
 		if (count($ini) == 0)
 		{
-			return array();
+			return [];
 		}
 
-		$sections = array();
-		$values = array();
-		$result = array();
-		$globals = array();
-		$i = 0;
+		$sections = [];
+		$values   = [];
+		$result   = [];
+		$globals  = [];
+		$i        = 0;
 		foreach ($ini as $line)
 		{
 			$line = trim($line);
@@ -7660,7 +7809,7 @@ class AKText extends AKAbstractObject
 			// Sections
 			if ($line[0] == '[')
 			{
-				$tmp = explode(']', $line);
+				$tmp        = explode(']', $line);
 				$sections[] = trim(substr($tmp[0], 1));
 				$i++;
 				continue;
@@ -7672,7 +7821,7 @@ class AKText extends AKAbstractObject
 			{
 				continue;
 			}
-			$key = trim($lineParts[0]);
+			$key   = trim($lineParts[0]);
 			$value = trim($lineParts[1]);
 			unset($lineParts);
 
@@ -7753,117 +7902,6 @@ class AKText extends AKAbstractObject
 		return $result + $globals;
 	}
 
-	public function getBrowserLanguage()
-	{
-		// Detection code from Full Operating system language detection, by Harald Hope
-		// Retrieved from http://techpatterns.com/downloads/php_language_detection.php
-		$user_languages = array();
-		//check to see if language is set
-		if (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"]))
-		{
-			$languages = strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-			// $languages = ' fr-ch;q=0.3, da, en-us;q=0.8, en;q=0.5, fr;q=0.3';
-			// need to remove spaces from strings to avoid error
-			$languages = str_replace(' ', '', $languages);
-			$languages = explode(",", $languages);
-
-			foreach ($languages as $language_list)
-			{
-				// pull out the language, place languages into array of full and primary
-				// string structure:
-				$temp_array = array();
-				// slice out the part before ; on first step, the part before - on second, place into array
-				$temp_array[0] = substr($language_list, 0, strcspn($language_list, ';'));//full language
-				$temp_array[1] = substr($language_list, 0, 2);// cut out primary language
-				if ((strlen($temp_array[0]) == 5) && ((substr($temp_array[0], 2, 1) == '-') || (substr($temp_array[0], 2, 1) == '_')))
-				{
-					$langLocation  = strtoupper(substr($temp_array[0], 3, 2));
-					$temp_array[0] = $temp_array[1] . '-' . $langLocation;
-				}
-				//place this array into main $user_languages language array
-				$user_languages[] = $temp_array;
-			}
-		}
-		else// if no languages found
-		{
-			$user_languages[0] = array('', ''); //return blank array.
-		}
-
-		$this->language = null;
-		$basename       = basename(__FILE__, '.php') . '.ini';
-
-		// Try to match main language part of the filename, irrespective of the location, e.g. de_DE will do if de_CH doesn't exist.
-		if (class_exists('AKUtilsLister'))
-		{
-			$fs       = new AKUtilsLister();
-			$iniFiles = $fs->getFiles(KSROOTDIR, '*.' . $basename);
-			if (empty($iniFiles) && ($basename != 'kickstart.ini'))
-			{
-				$basename = 'kickstart.ini';
-				$iniFiles = $fs->getFiles(KSROOTDIR, '*.' . $basename);
-			}
-		}
-		else
-		{
-			$iniFiles = null;
-		}
-
-		if (is_array($iniFiles))
-		{
-			foreach ($user_languages as $languageStruct)
-			{
-				if (is_null($this->language))
-				{
-					// Get files matching the main lang part
-					$iniFiles = $fs->getFiles(KSROOTDIR, $languageStruct[1] . '-??.' . $basename);
-					if (count($iniFiles) > 0)
-					{
-						$filename       = $iniFiles[0];
-						$filename       = substr($filename, strlen(KSROOTDIR) + 1);
-						$this->language = substr($filename, 0, 5);
-					}
-					else
-					{
-						$this->language = null;
-					}
-				}
-			}
-		}
-
-		if (is_null($this->language))
-		{
-			// Try to find a full language match
-			foreach ($user_languages as $languageStruct)
-			{
-				if (@file_exists($languageStruct[0] . '.' . $basename) && is_null($this->language))
-				{
-					$this->language = $languageStruct[0];
-				}
-				else
-				{
-
-				}
-			}
-		}
-		else
-		{
-			// Do we have an exact match?
-			foreach ($user_languages as $languageStruct)
-			{
-				if (substr($this->language, 0, strlen($languageStruct[1])) == $languageStruct[1])
-				{
-					if (file_exists($languageStruct[0] . '.' . $basename))
-					{
-						$this->language = $languageStruct[0];
-					}
-				}
-			}
-		}
-
-		// Now, scan for full language based on the partial match
-
-	}
-
 	public static function sprintf($key)
 	{
 		$text = self::getInstance();
@@ -7917,6 +7955,113 @@ class AKText extends AKAbstractObject
 		return $string;
 	}
 
+	public function getBrowserLanguage()
+	{
+		// Detection code from Full Operating system language detection, by Harald Hope
+		// Retrieved from http://techpatterns.com/downloads/php_language_detection.php
+		$user_languages = [];
+		//check to see if language is set
+		if (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"]))
+		{
+			$languages = strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+			// $languages = ' fr-ch;q=0.3, da, en-us;q=0.8, en;q=0.5, fr;q=0.3';
+			// need to remove spaces from strings to avoid error
+			$languages = str_replace(' ', '', $languages);
+			$languages = explode(",", $languages);
+
+			foreach ($languages as $language_list)
+			{
+				// pull out the language, place languages into array of full and primary
+				// string structure:
+				$temp_array = [];
+				// slice out the part before ; on first step, the part before - on second, place into array
+				$temp_array[0] = substr($language_list, 0, strcspn($language_list, ';'));//full language
+				$temp_array[1] = substr($language_list, 0, 2);// cut out primary language
+				if ((strlen($temp_array[0]) == 5) && ((substr($temp_array[0], 2, 1) == '-') || (substr($temp_array[0], 2, 1) == '_')))
+				{
+					$langLocation  = strtoupper(substr($temp_array[0], 3, 2));
+					$temp_array[0] = $temp_array[1] . '-' . $langLocation;
+				}
+				//place this array into main $user_languages language array
+				$user_languages[] = $temp_array;
+			}
+		}
+		else// if no languages found
+		{
+			$user_languages[0] = ['', '']; //return blank array.
+		}
+
+		$this->language = null;
+		$basename       = basename(__FILE__, '.php') . '.ini';
+
+		// Try to match main language part of the filename, irrespective of the location, e.g. de_DE will do if de_CH doesn't exist.
+		if (class_exists('AKUtilsLister'))
+		{
+			$fs       = new AKUtilsLister();
+			$iniFiles = $fs->getFiles(KSROOTDIR, '*.' . $basename);
+			if (empty($iniFiles) && ($basename != 'kickstart.ini'))
+			{
+				$basename = 'kickstart.ini';
+				$iniFiles = $fs->getFiles(KSROOTDIR, '*.' . $basename);
+			}
+		}
+		else
+		{
+			$iniFiles = null;
+		}
+
+		if (is_array($iniFiles))
+		{
+			foreach ($user_languages as $languageStruct)
+			{
+				if (is_null($this->language))
+				{
+					// Get files matching the main lang part
+					$iniFiles = $fs->getFiles(KSROOTDIR, $languageStruct[1] . '-??.' . $basename);
+					if (count($iniFiles) > 0)
+					{
+						$filename       = $iniFiles[0];
+						$filename       = substr($filename, strlen(KSROOTDIR) + 1);
+						$this->language = substr($filename, 0, 5);
+					}
+					else
+					{
+						$this->language = null;
+					}
+				}
+			}
+		}
+
+		if (is_null($this->language))
+		{
+			// Try to find a full language match
+			foreach ($user_languages as $languageStruct)
+			{
+				if (@file_exists($languageStruct[0] . '.' . $basename) && is_null($this->language))
+				{
+					$this->language = $languageStruct[0];
+				}
+			}
+		}
+		else
+		{
+			// Do we have an exact match?
+			foreach ($user_languages as $languageStruct)
+			{
+				if (substr($this->language, 0, strlen($languageStruct[1])) == $languageStruct[1])
+				{
+					if (file_exists($languageStruct[0] . '.' . $basename))
+					{
+						$this->language = $languageStruct[0];
+					}
+				}
+			}
+		}
+
+		// Now, scan for full language based on the partial match
+
+	}
+
 	public function dumpLanguage()
 	{
 		$out = '';
@@ -7950,7 +8095,7 @@ class AKText extends AKAbstractObject
 		$this->strings = $this->default_translation;
 	}
 
-	public function addDefaultLanguageStrings($stringList = array())
+	public function addDefaultLanguageStrings($stringList = [])
 	{
 		if (!is_array($stringList))
 		{
@@ -7963,6 +8108,51 @@ class AKText extends AKAbstractObject
 
 		$this->strings = array_merge($stringList, $this->strings);
 	}
+
+	private function loadTranslation($lang = null)
+	{
+		if (defined('KSLANGDIR'))
+		{
+			$dirname = KSLANGDIR;
+		}
+		else
+		{
+			$dirname = KSROOTDIR;
+		}
+
+		$myName   = defined('KSSELFNAME') ? KSSELFNAME : basename(__FILE__);
+		$basename = basename($myName, '.php') . '.ini';
+
+		if (empty($lang))
+		{
+			$lang = $this->language;
+		}
+
+		$translationFilename = $dirname . DIRECTORY_SEPARATOR . $lang . '.' . $basename;
+		if (!@file_exists($translationFilename) && ($basename != 'kickstart.ini'))
+		{
+			$basename            = 'kickstart.ini';
+			$translationFilename = $dirname . DIRECTORY_SEPARATOR . $lang . '.' . $basename;
+		}
+		if (!@file_exists($translationFilename))
+		{
+			return;
+		}
+		$temp = self::parse_ini_file($translationFilename, false);
+
+		if (!is_array($this->strings))
+		{
+			$this->strings = [];
+		}
+		if (empty($temp))
+		{
+			$this->strings = array_merge($this->default_translation, $this->strings);
+		}
+		else
+		{
+			$this->strings = array_merge($this->strings, $temp);
+		}
+	}
 }
 
 /**
@@ -7970,7 +8160,7 @@ class AKText extends AKAbstractObject
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -8286,7 +8476,7 @@ class AKFactory
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -8325,7 +8515,7 @@ interface AKEncryptionAESAdapterInterface
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -8412,7 +8602,7 @@ abstract class AKEncryptionAESAdapterAbstract
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -8513,7 +8703,7 @@ class Mcrypt extends AKEncryptionAESAdapterAbstract implements AKEncryptionAESAd
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -8617,7 +8807,7 @@ class OpenSSL extends AKEncryptionAESAdapterAbstract implements AKEncryptionAESA
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -9290,7 +9480,7 @@ class AKEncryptionAES
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -9342,11 +9532,46 @@ function masterSetup()
 	// In restore.php mode, require restoration.php or fail
 	if (!defined('KICKSTART'))
 	{
+		// On Joomla 5 we need to look for a defines.php file, in case we are in a custom public folder
+		$definesFile = '../../../defines.php';
+
+		if (file_exists($definesFile))
+		{
+			$fileContents = @file_get_contents($definesFile) ?: '';
+
+			if (strpos($fileContents, "define('JPATH_PUBLIC'") !== false)
+			{
+				defined('_JEXEC') || define('_JEXEC', 1);
+			}
+
+			require_once $definesFile;
+		}
+
 		// This is the standalone mode, used by Akeeba Backup Professional. It looks for a restoration.php
 		// file to perform its magic. If the file is not there, we will abort.
-		$setupFile = 'restoration.php';
+		$alternateFiles = [
+			__DIR__ . '/restoration.php',
+			'restoration.php',
+		];
 
-		if (!file_exists($setupFile))
+		if (defined('JPATH_PUBLIC'))
+		{
+			$alternateFiles[] = JPATH_PUBLIC . 'administrator/components/com_akeebabackup/restoration.php';
+		}
+
+		$foundSetupFile = false;
+
+		foreach ($alternateFiles as $setupFile)
+		{
+			if (file_exists($setupFile))
+			{
+				$foundSetupFile = true;
+
+				break;
+			}
+		}
+
+		if (!$foundSetupFile)
 		{
 			AKFactory::set('kickstart.enabled', false);
 
@@ -9606,7 +9831,7 @@ function masterSetup()
  * An AJAX-powered archive extraction library for JPA, JPS and ZIP archives
  *
  * @package   restore
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -9808,7 +10033,7 @@ if (!defined('KICKSTART'))
 					// opcode cache busting before including the filename
 					if (function_exists('opcache_invalidate'))
 					{
-						opcache_invalidate($filename);
+						opcache_invalidate($filename, true);
 					}
 
 					if (function_exists('apc_compile_file'))
@@ -10015,7 +10240,7 @@ function getPhpHandlers($root = null)
 
 	$contents   = file_get_contents($htaccess);
 	$directives = AKUtilsHtaccess::extractHandler($contents);
-	$directives = explode("\n", $directives);
+	$directives = empty($directives) ? [] : explode("\n", $directives);
 
 	return $directives;
 }
@@ -10069,7 +10294,7 @@ function writePhpHandlers($siteRoot = '')
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 class AKKickstartUtils
@@ -10281,7 +10506,7 @@ class AKKickstartUtils
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 class ExtractionObserver extends AKAbstractPartObserver
@@ -10336,7 +10561,7 @@ class ExtractionObserver extends AKAbstractPartObserver
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -10385,7 +10610,7 @@ function callExtraFeature($method = null, array $params = array())
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -10749,7 +10974,7 @@ function resolvePath($filename)
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -10785,6 +11010,9 @@ function echoCSS()
 
     --white: #ffffff;
     --black: #000000;
+
+    --system-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --monospace: 'Berkeley Mono', ui-monospace, 'SF Mono', SFMono-Regular, 'DejaVu Sans Mono', Menlo, Consolas, "Courier New", Courier, monospace;
 }
 
 html {
@@ -10802,7 +11030,7 @@ a:hover, a:active {
 
 body {
     font-size: 12pt;
-    font-family: Calibri, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: var(--system-ui);
     text-rendering: optimizeLegibility;
     background: transparent;
     color: var(--grey-dark);
@@ -10971,6 +11199,10 @@ textarea {
     padding: 0 0 0 .5em;
 }
 
+.monospaced {
+	font-family: var(--monospace);
+}
+
 input[type="checkbox"] {
     width: auto;
 }
@@ -11123,7 +11355,7 @@ li {
 }
 
 #currentFile {
-    font-family: Consolas, "Courier New", Courier, monospace;
+    font-family: var(--monospace);
     font-size: 9pt;
     height: 10pt;
     overflow: hidden;
@@ -11325,7 +11557,7 @@ CSS;
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -11350,7 +11582,7 @@ function echoHeadJavascript()
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -11768,7 +12000,7 @@ if (typeof JSON !== "object")
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -12340,7 +12572,7 @@ if (!Object.keys)
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -12528,7 +12760,14 @@ akeeba.System.sanitizeErrorMessage = function (msg)
 {
 	if (msg.indexOf("<script") > -1)
 	{
-		msg = "(HTML containing script tags)";
+		try
+		{
+			msg = (new DOMParser().parseFromString(msg ?? "", "text/html")).textContent;
+		}
+		catch (e)
+		{
+			msg = "(HTML containing script tags)";
+		}
 	}
 
 	return msg;
@@ -13032,7 +13271,7 @@ akeeba.System.toggleClass = function(element, aClass)
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13385,7 +13624,7 @@ akeeba.Ajax.processQueue = function ()
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13428,7 +13667,7 @@ function trans(key)
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13502,6 +13741,8 @@ akeeba.System.documentReady(function () {
 	}
 
 	// Trigger change, so we avoid problems if the user refreshes the page
+	onChangeProcengine();
+
 	akeeba.System.triggerEvent(document.getElementById("kickstart.procengine", "change"));
 });
 
@@ -13511,7 +13752,7 @@ akeeba.System.documentReady(function () {
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13582,7 +13823,7 @@ function closeLightbox(event)
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13721,7 +13962,7 @@ function onTestFTPClick(event)
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13923,7 +14164,7 @@ function processRestorationStep(data)
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -13996,7 +14237,7 @@ function onRealRunCleanupClick()
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -14013,8 +14254,7 @@ function echoPage()
 	$bestArchivePath = AKKickstartUtils::getBestArchivePath();
 	$filelist        = AKKickstartUtils::getArchivesAsOptions($bestArchivePath);
 	?>
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<!DOCTYPE html>
 	<html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -14052,23 +14292,11 @@ function echoPage()
 		<div id="header">
 			<div class="title">
 				<span id="logo" alt="Akeeba Kickstart logo"></span>
-				Akeeba Kickstart <?php echo $edition ?> <?php echo defined('VERSION') ? VERSION : '7.1.2' ?>
+				Akeeba Kickstart <?php echo $edition ?> <?php echo defined('VERSION') ? VERSION : '8.0.4' ?>
 			</div>
 		</div>
 
 		<div id="page1">
-			<?php
-			akeeba_common_phpversion_warning(array(
-				'minPHPVersion'          => defined('KICKSTART_MIN_PHP') ? KICKSTART_MIN_PHP : "5.6.0",
-				'recommendedPHPVersion'  => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.4',
-				'softwareName'           => "Akeeba Kickstart",
-				'class_priority_high'    => 'error',
-				'class_priority_medium'  => 'warning',
-				'class_priority_low'     => 'notice',
-				'warn_about_maintenance' => false,
-			));
-			?>
-
 			<?php callExtraFeature('onPage1'); ?>
 
 			<div id="page1-content">
@@ -14124,8 +14352,8 @@ function echoPage()
 						<label for="kickstart.procengine">WRITE_TO_FILES</label>
 			<span class="field">
 				<select id="kickstart.procengine">
-					<option value="hybrid">WRITE_HYBRID</option>
 					<option value="direct">WRITE_DIRECTLY</option>
+					<option value="hybrid">WRITE_HYBRID</option>
 					<option value="ftp">WRITE_FTP</option>
 					<option value="sftp">WRITE_SFTP</option>
 				</select>
@@ -14211,7 +14439,7 @@ function echoPage()
                         <div class="help">RESTORE_PERMISSIONS_HELP</div>
 
                         <label for="kickstart.setup.extract_list">EXTRACT_LIST</label>
-                        <span class="field"><textarea id="kickstart.setup.extract_list" rows="5" cols="50"></textarea></span><br/>
+                        <span class="field"><textarea class="monospaced" id="kickstart.setup.extract_list" rows="5" cols="50"></textarea></span><br/>
                         <div class="help">EXTRACT_LIST_HELP</div>
 					</div>
 				</div>
@@ -14273,7 +14501,7 @@ function echoPage()
 				<div id="gotoStart" class="button">BTN_GOTOSTART</div>
 				<div id="retry" class="button bluebutton">BTN_RETRY</div>
 				<div>
-					<a href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/kscantextract.html"
+					<a href="https://www.akeeba.com/documentation/akeeba-kickstart-documentation/kscantextract.html" class="whitelink"
 					   target="_blank">CANTGETITTOWORK</a>
 				</div>
 			</div>
@@ -14299,456 +14527,11 @@ function echoPage()
 }
 
 /**
- * Old PHP version notification
- *
- * @copyright Copyright (c) 2018-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license   GNU General Public License version 3, or later
- */
-
-(defined('_JEXEC') || defined('WPINC') || defined('APATH_BASE') || defined('AKEEBA_COMMON_WRONGPHP') || defined('KICKSTART')) or die;
-
-if (!function_exists('akeeba_common_phpversion_warning'))
-{
-	/**
-	 * The function checks if you are using an obsolete PHP version and outputs a warning if you do.
-	 *
-	 * Configuration array:
-	 *
-	 * * softwareName: human-readable software name, e.g. "Akeeba Example"
-	 * * class_priority_low: CSS class for low priority notices
-	 * * class_priority_medium: CSS class for medium priority warnings
-	 * * class_priority_high: CSS class for high priority errors
-	 * * warn_about_maintenance: should I warn about PHP versions which have entered maintenance mode? Def: TRUE.
-	 * * maintenance_period: how long after we enter maintenance period should I warn the user? Def: P6M.
-	 * * eol_period_too_old: how long after EOL is the PHP version considered dangerous, as DateInterval text, e.g. P3M
-	 * * longVersion: current PHP version, long format, e.g. "7.3.1-12ubuntu3.2". Skip to automatically determine.
-	 * * shortVersion: current PHP version, short format, e.g. "7.3". Skip to automatically determine.
-	 * * currentTimestamp: current UNIX timestamp. Skip to automatically determine.
-	 *
-	 * You need to provide at the very least the softwareName. The default CSS classes are compatible with Akeeba FEF.
-	 * PHP versions in maintenance will be warned about and the period after which an EOL version of PHP is dangerous is
-	 * considered to be 3 months.
-	 *
-	 * @param   array  $config  See above
-	 *
-	 * @throws  Exception
-	 */
-	function akeeba_common_phpversion_warning($config = array())
-	{
-		/**
-		 * Format: version => [maintenance_date, eol_date]
-		 *
-		 * For versions older than 5.6 we use a fake maintenance_date because this information no longer exists on PHP's
-		 * site and it's irrelevant anyway; these PHP versions are already EOL therefore we only use their EOL date.
-		 */
-		$phpDates = array(
-			'3.0' => array('1990-01-01 00:00:00', '2000-10-20 00:00:00'),
-			'4.0' => array('1990-01-01 00:00:00', '2001-06-23 00:00:00'),
-			'4.1' => array('1990-01-01 00:00:00', '2002-03-12 00:00:00'),
-			'4.2' => array('1990-01-01 00:00:00', '2002-09-06 00:00:00'),
-			'4.3' => array('1990-01-01 00:00:00', '2005-03-31 00:00:00'),
-			'4.4' => array('1990-01-01 00:00:00', '2008-08-07 00:00:00'),
-			'5.0' => array('1990-01-01 00:00:00', '2005-09-05 00:00:00'),
-			'5.1' => array('1990-01-01 00:00:00', '2006-08-24 00:00:00'),
-			'5.2' => array('1990-01-01 00:00:00', '2011-01-11 00:00:00'),
-			'5.3' => array('1990-01-01 00:00:00', '2014-08-14 00:00:00'),
-			'5.4' => array('1990-01-01 00:00:00', '2015-09-03 00:00:00'),
-			'5.5' => array('1990-01-01 00:00:00', '2016-07-10 00:00:00'),
-			'5.6' => array('2017-01-10 00:00:00', '2018-12-31 00:00:00'),
-			'7.0' => array('2018-01-01 00:00:00', '2019-01-10 00:00:00'),
-			'7.1' => array('2018-12-01 00:00:00', '2019-12-01 00:00:00'),
-			'7.2' => array('2019-11-30 00:00:00', '2020-11-30 00:00:00'),
-			'7.3' => array('2020-12-06 00:00:00', '2021-12-06 00:00:00'),
-			'7.4' => array('2021-11-28 00:00:00', '2022-11-28 00:00:00'),
-			'8.0' => array('2022-11-26 00:00:00', '2023-11-26 00:00:00'),
-			'8.1' => array('2023-11-25 00:00:00', '2024-11-25 00:00:00'),
-		);
-
-		// Make sure I have all necessary configuration variables
-		$useFef = !defined('JVERSION') || version_compare(JVERSION, '4.0.0', 'lt');
-		$config = array_merge(array(
-			'softwareName'           => 'This software',
-			'class_priority_low'     => $useFef ? 'akeeba-block--info' : 'alert alert-info',
-			'class_priority_medium'  => $useFef ? 'akeeba-block--warning' : 'alert alert-warning',
-			'class_priority_high'    => $useFef ? 'akeeba-block--failure' : 'alert alert-danger',
-			'warn_about_maintenance' => true,
-			'maintenance_period'     => 'P6M',
-			'eol_period_too_old'     => 'P3M',
-			'longVersion'            => PHP_VERSION,
-			'shortVersion'           => sprintf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION),
-			'currentTimestamp'       => time(),
-		), $config);
-
-		// Selectively extract configuration variables. Do not use extract(), it's potentially dangerous.
-		$softwareName           = $config['softwareName'];
-		$class_priority_low     = $config['class_priority_low'];
-		$class_priority_medium  = $config['class_priority_medium'];
-		$class_priority_high    = $config['class_priority_high'];
-		$warn_about_maintenance = $config['warn_about_maintenance'];
-		$maintenance_period     = $config['maintenance_period'];
-		$eol_period_too_old     = $config['eol_period_too_old'];
-		$longVersion            = $config['longVersion'];
-		$shortVersion           = $config['shortVersion'];
-		$currentTimestamp       = $config['currentTimestamp'];
-		$phpVersions            = array_keys($phpDates);
-		$lastVersion            = array_pop($phpVersions);
-
-		/**
-		 * Safe defaults for PHP versions older than 5.3.0.
-		 *
-		 * Older PHP versions don't even have support for DateTime so we need these defaults to prevent this warning script from
-		 * bringing the site down with an error.
-		 */
-		$isEol      = true;
-		$isAncient  = true;
-		$isSecurity = false;
-		$isCurrent  = false;
-		$isTooNew   = !isset($phpDates[$shortVersion]) && version_compare($shortVersion, $lastVersion, 'gt');
-
-		$eolDateFormatted      = isset($phpDates[$shortVersion]) ? $phpDates[$shortVersion][1] : '';
-		$securityDateFormatted = isset($phpDates[$shortVersion]) ? $phpDates[$shortVersion][0] : '';
-
-		/**
-		 * This can only work on PHP 5.3.0 or later since we are using DatePeriod (PHP >= 5.3.0)
-		 */
-		if (version_compare($longVersion, '5.2.0', 'ge') && !$isTooNew)
-		{
-			$tzGmt         = new DateTimeZone('GMT');
-			$securityDate  = new DateTime($phpDates[$shortVersion][0], $tzGmt);
-			$eolDate       = new DateTime($phpDates[$shortVersion][1], $tzGmt);
-			$ancientPeriod = new DateInterval($eol_period_too_old);
-			$ancientDate   = clone $eolDate;
-			$ancientDate->add($ancientPeriod);
-
-			if (!empty($maintenance_period))
-			{
-				$maintenancePeriod = new DateInterval($maintenance_period);
-				$securityDate      = $securityDate->add($maintenancePeriod);
-			}
-
-			/**
-			 * Ancient:  This PHP version has reached end-of-life more than $eol_period_too_old ago
-			 * EOL:      This PHP version has reached end-of-life
-			 * Security: This PHP version has reached the Security Support date but not the EOL date yet
-			 * Current:  This PHP version is still in Active Support
-			 */
-			$isEol      = $eolDate->getTimestamp() <= $currentTimestamp;
-			$isAncient  = $ancientDate->getTimestamp() <= $currentTimestamp;
-			$isSecurity = !$isEol && ($securityDate->getTimestamp() <= $currentTimestamp);
-			$isCurrent  = !$isEol && !$isSecurity;
-
-			$eolDateFormatted      = $eolDate->format('l, d F Y');
-			$securityDateFormatted = $securityDate->format('l, d F Y');
-		}
-
-		if ($isCurrent)
-		{
-			return;
-		}
-
-		if ($isTooNew): ?>
-			<!-- Your PHP version is too new -->
-			<div class="<?php echo $class_priority_medium ?>">
-				<h3>PHP version <?php echo $shortVersion ?> is newer than this software supports</h3>
-
-				<p>
-					Your site is currently using PHP <?php echo $longVersion ?>. This version of PHP was released after your currently installed version of <?php echo $softwareName ?> was released. As a result, we cannot guarantee that <?php echo $softwareName ?> will work correctly on your site.
-				</p>
-				<p>
-					Please check for an updated version of <?php echo $softwareName ?>. Kindly note that it usually takes us a few days to weeks after the initial (X.Y<strong>.0</strong>) PHP version release before we publish a version of our software which supports it.
-				</p>
-			</div>
-		<?php elseif ($isAncient): ?>
-			<!-- Your PHP version has been End-of-Life for a very long time -->
-			<div class="<?php echo $class_priority_high ?>">
-				<h3>Severely outdated PHP version <?php echo $shortVersion ?></h3>
-
-				<p>
-					Your site is currently using PHP <?php echo $longVersion ?>. This version of PHP has become <a href="https://php.net/eol.php" target="_blank">End-of-Life since <?php echo $eolDateFormatted ?></a>. It has not received security updates for a <em>very long time</em>. You MUST NOT use it for a live site!
-				</p>
-				<p>
-					<?php echo $softwareName ?> will stop supporting your version of PHP very soon. You must <strong>very urgently</strong> upgrade to a newer version of PHP. You can check <a href="https://www.akeeba.com/compatibility.html">our Compatibility page</a> to see which versions of PHP are supported by each version of our software, select the newest one that fits your site's needs and upgrade your site to it. You can ask your host or your system administrator for instructions on upgrading PHP. It's easy and it will make your site faster and more secure.
-				</p>
-			</div>
-		<?php
-		elseif ($isEol):
-			?>
-			<!-- Your PHP version has recently been marked End-of-Life -->
-			<div class="<?php echo $class_priority_medium ?>">
-				<h3>Outdated PHP version <?php echo $shortVersion ?></h3>
-
-				<p>
-					Your site is currently using PHP <?php echo $longVersion ?>. This version of PHP has recently become <a href="https://php.net/eol.php" target="_blank">End-of-Life since <?php echo $eolDateFormatted ?></a>. It has stopped receiving security updates. You should not use it for a live site.
-				</p>
-				<p>
-					<?php echo $softwareName ?> will stop supporting your version of PHP in the near future. You should upgrade to a newer version of PHP at your earliest convenience. You can check <a href="https://www.akeeba.com/compatiblity.html">our Compatibility page</a> to see which versions of PHP are supported by each version of our software, select the newest one that fits your site's needs and upgrade your site to it. You can ask your host or your system administrator for instructions on upgrading PHP. It's easy and it will make your site faster and more secure.
-				</p>
-			</div>
-		<?php
-		elseif ($warn_about_maintenance):
-			?>
-			<!-- Your PHP version has entered “Security Support” and will become EOL rather soon -->
-			<div class="<?php echo $class_priority_low ?>">
-				<h3>PHP <?php echo $shortVersion ?> is approaching End–of–Life</h3>
-
-				<p>
-					Your site is currently using PHP <?php echo $longVersion ?>. This version of PHP has entered its “Security maintenance” phase since <?php echo $securityDateFormatted ?> and has stopped receiving bug fixes. It will stop receiving security updates on <?php echo $eolDateFormatted ?> at which point it will be unsuitable for use on a live site. We recommend updating to a newer PHP version as soon as possible.
-				</p>
-			</div>
-		<?php
-		endif;
-	}
-}
-
-/**
- * Immediately executes the akeeba_common_phpversion_warning() function on all of our software except Kickstart.
- */
-if (!defined('KICKSTART'))
-{
-	try
-	{
-		$useFef = !defined('JVERSION') || version_compare(JVERSION, '4.0.0', 'lt');
-		akeeba_common_phpversion_warning(array(
-			// Configuration -- Override before calling this script
-			'softwareName'           => isset($softwareName) ? $softwareName : 'This software',
-			'class_priority_low'     => $useFef ? 'akeeba-block--info' : 'alert alert-info',
-			'class_priority_medium'  => $useFef ? 'akeeba-block--warning' : 'alert alert-warning',
-			'class_priority_high'    => $useFef ? 'akeeba-block--failure' : 'alert alert-danger',
-			'warn_about_maintenance' => isset($warn_about_maintenance) ? ((bool) $warn_about_maintenance) : true,
-			'eol_period_too_old'     => isset($eol_period_too_old) ? $eol_period_too_old : 'P3M',
-			// Override these to test the script
-			'longVersion'            => isset($longVersion) ? $longVersion : PHP_VERSION,
-			'shortVersion'           => isset($shortVersion) ? $shortVersion : sprintf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION),
-			'currentTimestamp'       => isset($currentTimestamp) ? $currentTimestamp : time(),
-		));
-	}
-	catch (Exception $e)
-	{
-		// This should never happen
-		return;
-	}
-}
-
-/**
- * Obsolete PHP version notification
- *
- * @copyright Copyright (c) 2018-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license   GNU General Public License version 3, or later
- */
-
-(defined('_JEXEC') || defined('WPINC') || defined('APATH_BASE') || defined('AKEEBA_COMMON_WRONGPHP') || defined('KICKSTART')) or die;
-
-if (!function_exists('akeeba_common_wrongphp'))
-{
-	/**
-	 * This function checks if you are using an obsolete PHP version. It returns and boolean status and optionally
-	 * prints an error page if your PHP version is, indeed, too old.
-	 *
-	 * * minPHPVersion: minimum PHP version supported by this software, e.g. "7.2.0"
-	 * * softwareName: human-readable software name, e.g. "Akeeba Example"
-	 * * silentResutls: suppress error messages on old PHP version, just return false (default: TRUE)
-	 * * longVersion: current PHP version, long format, e.g. "7.3.1-12ubuntu3.2". Skip to automatically determine.
-	 * * shortVersion: current PHP version, short format, e.g. "7.3". Skip to automatically determine.
-	 * * currentTimestamp: current UNIX timestamp. Skip to automatically determine.
-	 *
-	 * You need to provide at the very least the minPHPVersion and softwareName.
-	 *
-	 * @param  array  $config
-	 *
-	 * @return bool  FALSE if your PHP version is too old. TRUE if your PHP version is still supported.
-	 * @throws Exception
-	 */
-	function akeeba_common_wrongphp($config = array())
-	{
-		/**
-		 * Format: version => [maintenance_date, eol_date]
-		 *
-		 * For versions older than 5.6 we use a fake maintenance_date because this information no longer exists on PHP's
-		 * site and it's irrelevant anyway; these PHP versions are already EOL therefore we only use their EOL date.
-		 */
-		$phpDates = array(
-			'3.0' => array('1990-01-01 00:00:00', '2000-10-20 00:00:00'),
-			'4.0' => array('1990-01-01 00:00:00', '2001-06-23 00:00:00'),
-			'4.1' => array('1990-01-01 00:00:00', '2002-03-12 00:00:00'),
-			'4.2' => array('1990-01-01 00:00:00', '2002-09-06 00:00:00'),
-			'4.3' => array('1990-01-01 00:00:00', '2005-03-31 00:00:00'),
-			'4.4' => array('1990-01-01 00:00:00', '2008-08-07 00:00:00'),
-			'5.0' => array('1990-01-01 00:00:00', '2005-09-05 00:00:00'),
-			'5.1' => array('1990-01-01 00:00:00', '2006-08-24 00:00:00'),
-			'5.2' => array('1990-01-01 00:00:00', '2011-01-11 00:00:00'),
-			'5.3' => array('1990-01-01 00:00:00', '2014-08-14 00:00:00'),
-			'5.4' => array('1990-01-01 00:00:00', '2015-09-03 00:00:00'),
-			'5.5' => array('1990-01-01 00:00:00', '2016-07-10 00:00:00'),
-			'5.6' => array('2017-01-10 00:00:00', '2018-12-31 00:00:00'),
-			'7.0' => array('2018-01-01 00:00:00', '2019-01-10 00:00:00'),
-			'7.1' => array('2018-12-01 00:00:00', '2019-12-01 00:00:00'),
-			'7.2' => array('2019-11-30 00:00:00', '2020-11-30 00:00:00'),
-			'7.3' => array('2020-12-06 00:00:00', '2021-12-06 00:00:00'),
-			'7.4' => array('2021-11-28 00:00:00', '2022-11-28 00:00:00'),
-			'8.0' => array('2022-11-26 00:00:00', '2023-11-26 00:00:00'),
-			'8.1' => array('2023-11-25 00:00:00', '2024-11-25 00:00:00'),
-		);
-
-		// Make sure I have all necessary configuration variables
-		$config = array_merge(array(
-			'minPHPVersion'         => '7.2.0',
-			'softwareName'          => 'This software',
-			'silentResults'         => false,
-			'longVersion'           => PHP_VERSION,
-			'shortVersion'          => sprintf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION),
-			'currentTimestamp'      => time(),
-		), $config);
-
-		// Selectively extract configuration variables. Do not use extract(), it's potentially dangerous.
-		$minPHPVersion         = $config['minPHPVersion'];
-		$softwareName          = $config['softwareName'];
-		$silentResults         = $config['silentResults'];
-		$longVersion           = $config['longVersion'];
-		$shortVersion          = $config['shortVersion'];
-		$currentTimestamp      = $config['currentTimestamp'];
-
-		if (!version_compare($longVersion, $minPHPVersion, 'lt'))
-		{
-			unset($minPHPVersion, $softwareName, $longVersion, $shortVersion, $phpDates,
-				$silentResults, $currentTimestamp);
-
-			return true;
-		}
-
-// Typically used in the frontend to not divulge any information about the server
-		if ($silentResults)
-		{
-			return false;
-		}
-
-		/**
-		 * Safe defaults for PHP versions older than 5.3.0.
-		 *
-		 * Older PHP versions don't even have support for DateTime so we need these defaults to prevent this warning script from
-		 * bringing the site down with an error.
-		 */
-		$isEol      = true;
-		$isAncient  = true;
-		$isSecurity = false;
-		$isCurrent  = false;
-
-		$eolDateFormatted      = $phpDates[$shortVersion][1];
-		$securityDateFormatted = $phpDates[$shortVersion][0];
-
-
-		/**
-		 * This can only work on PHP 5.2.0 or later
-		 */
-		if (version_compare($longVersion, '5.2.0', 'ge'))
-		{
-			$tzGmt        = new DateTimeZone('GMT');
-			$securityDate = new DateTime($phpDates[$shortVersion][0], $tzGmt);
-			$eolDate      = new DateTime($phpDates[$shortVersion][1], $tzGmt);
-
-			/**
-			 * Ancient:  This PHP version has reached end-of-life more than 2 years ago
-			 * EOL:      This PHP version has reached end-of-life
-			 * Security: This PHP version has reached the Security Support date but not the EOL date yet
-			 * Current:  This PHP version is still in Active Support
-			 */
-			$isEol      = $eolDate->getTimestamp() <= $currentTimestamp;
-			$isAncient  = $isEol && (($currentTimestamp - $eolDate->getTimestamp()) >= 63072000);
-			$isSecurity = !$isEol && ($securityDate->getTimestamp() <= $currentTimestamp);
-			$isCurrent  = !$isEol && !$isSecurity;
-
-			$eolDateFormatted      = $eolDate->format('l, d F Y');
-			$securityDateFormatted = $securityDate->format('l, d F Y');
-		}
-
-		$characterization = $isCurrent ? 'unsupported' : 'older';
-		$characterization = $isEol ? 'obsolete' : $characterization;
-		$characterization = $isAncient ? 'dangerously obsolete' : $characterization;
-
-		?>
-
-		<div style="margin: 1em">
-			<p style="font-size: 180%; margin: 2em 1em; padding: 2em 1em; text-align: center; border: thin solid #f0ad4e; background-color: gold; font-weight: bold; border-radius: 0.25em">
-				<?php echo $softwareName ?> requires PHP <?php echo $minPHPVersion ?> or later.
-			</p>
-			<h2><?php echo ucfirst($characterization) ?> PHP version <?php echo $longVersion ?> detected</h2>
-			<hr />
-			<p>
-				You can check <a href="https://www.akeeba.com/compatiblity.html">our Compatibility page</a> to see which versions of PHP are supported by each version of our software, select the newest one that fits your site's needs and upgrade your site to it. If you are unsure how to do this, please ask your host.
-			</p>
-			<p>
-				<a href="https://www.akeeba.com/how-do-version-numbers-work.html">Version numbers don't make sense?</a>
-			</p>
-
-			<hr />
-
-			<?php if ($isAncient): ?>
-				<h3>Urgent security advice</h3>
-
-				<p>
-					Your version of PHP, <?php echo $longVersion ?>, <a href="http://php.net/eol.php">has reached the end of its life</a> a <strong>very</strong> long time ago, namely on <?php echo $eolDateFormatted ?>. It has known security vulnerabilities which can be used to compromise (“hack”) web servers. It is no longer safe using it in production. You are <strong>VERY STRONGLY</strong> advised to upgrade your server to a <a href="https://www.php.net/supported-versions.php">supported PHP version</a> as soon as possible.
-				</p>
-			<?php elseif ($isEol): ?>
-				<h3>Security advice</h3>
-
-				<p>
-					Your version of PHP, <?php echo $longVersion ?>, <a href="http://php.net/eol.php">has reached the end of its life</a> on <?php echo $eolDateFormatted ?>. End-of-life PHP versions may have security vulnerabilities — which may or may not have been known before they became End of Life — which can be used to compromise (“hack”) your site. It is no longer safe using it in production, even if your host or your Linux distribution claim otherwise. The PHP language developers themselves have said time over time that not all security vulnerabilities fixes can be backported to End-of-Life versions of PHP since they may require architectural changes in PHP itself. You are <strong>strongly</strong> advised to upgrade your server to a <a href="https://www.php.net/supported-versions.php">supported PHP version</a> as soon as possible.
-				</p>
-
-			<?php elseif ($isSecurity): ?>
-				<h3>Security reminder</h3>
-
-				<p>
-					Your version of PHP, <?php echo $longVersion ?>, has entered the “Security Support” phase of its life on <?php echo $securityDateFormatted ?>. As such, only security issues will be addressed but not any of its known functional issues (“bugs”). Unfixed functional issues in PHP can lead to your site not working properly. It is advisable to plan migrating your site to a <a href="https://www.php.net/supported-versions.php">supported PHP version</a> no later than <?php echo $eolDateFormatted ?> – that's when PHP <?php echo $shortVersion ?> will become End-of-Life, therefore completely unsuitable for use on a live server.
-				</p>
-			<?php endif; ?>
-
-			<?php if ($isSecurity || $isCurrent): ?>
-				<h3>Why is my PHP version not supported?</h3>
-
-				<p>
-					Even though PHP <?php echo $shortVersion ?> will be supported by the PHP project until <?php echo $eolDateFormatted ?> we are unfortunately unable to provide support for it in our software. This has to do either with missing features or third party libraries. Older PHP versions are missing features we require for our software to work efficiently and be written in a way that makes it possible for us to provide a plethora of relevant features while maintaining good quality control. Moreover, third party libraries we use to provide some of the software's features do not support older PHP versions for the same reason – so even if we don't absolutely need to use at least PHP <?php echo $minPHPVersion ?> the third party libraries do, making it impossible for our software to run on your older version <?php echo $shortVersion ?>. We apologize for the inconvenience.
-				</p>
-				<p>
-					We'd like to remind you, however, that newer PHP versions are always faster and more well-tested than their predecessors. Upgrading your site to a newer PHP version will not only let our software run but will also make your site faster, more stable and help it perform better in search engine results.
-				</p>
-			<?php endif; ?>
-		</div>
-
-		<?php return false;
-	}
-}
-
-/**
- * Immediately executes the akeeba_common_wrongphp() function on all of our software except Kickstart.
- */
-if (!defined('KICKSTART'))
-{
-	try
-	{
-		return akeeba_common_wrongphp(array(
-			// Configuration -- Override before calling this script
-			'minPHPVersion'         => isset($minPHPVersion) ? $minPHPVersion : '7.2.0',
-			'softwareName'          => isset($softwareName) ? $softwareName : 'This software',
-			'silentResults'         => isset($silentResults) ? $silentResults : false,
-			// Override these to test the script
-			'longVersion'           => isset($longVersion) ? $longVersion : PHP_VERSION,
-			'shortVersion'          => isset($shortVersion) ? $shortVersion : sprintf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION),
-			'currentTimestamp'      => isset($currentTimestamp) ? $currentTimestamp : time(),
-		));
-	}
-	catch (Exception $e)
-	{
-		// This should never happen
-		return false;
-	}
-}
-
-/**
  * Akeeba Kickstart
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -14936,7 +14719,7 @@ function rollbackAutomaticRenames(AKAbstractUnarchiver $unarchiver, AKAbstractPo
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -15167,7 +14950,7 @@ function kickstart_application_cli()
 
 	if (!$silent)
 	{
-		$version = defined('VERSION') ? VERSION : '7.1.2';
+		$version = defined('VERSION') ? VERSION : '8.0.4';
 		echo <<< BANNER
 Akeeba Kickstart CLI $version
 Copyright (c) 2008-$year Akeeba Ltd / Nicholas K. Dionysopoulos
@@ -15180,20 +14963,6 @@ license. See http://www.gnu.org/licenses/gpl-3.0.html for details.
 
 
 BANNER;
-	}
-
-	$phpCheckConfig = array(
-		'minPHPVersion'         => defined('KICKSTART_MIN_PHP') ? KICKSTART_MIN_PHP : "5.6.0",
-		'recommendedPHPVersion' => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.4',
-		'softwareName'          => "Akeeba Kickstart",
-		'silentResults'         => true
-	);
-
-	if (!akeeba_common_wrongphp($phpCheckConfig))
-	{
-		echo sprintf("%s requires PHP %s or later to function. Your current PHP version is %s which is older than the minimum requirement.", $phpCheckConfig['softwareName'], $phpCheckConfig['minPHPVersion'], PHP_VERSION);
-
-		die;
 	}
 
 	$paths = AKCliParams::getOption('', array(), true);
@@ -15384,7 +15153,7 @@ BANNER;
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -15393,14 +15162,6 @@ BANNER;
  */
 function kickstart_application_web()
 {
-	if (!akeeba_common_wrongphp(array(
-		'minPHPVersion'         => defined('KICKSTART_MIN_PHP') ? KICKSTART_MIN_PHP : "5.6.0",
-		'recommendedPHPVersion' => defined('KICKSTART_RECOMMENDED_PHP') ? KICKSTART_RECOMMENDED_PHP : '7.4',
-		'softwareName'          => "Akeeba Kickstart",
-	))) {
-		die;
-	}
-
 	$retArray = array(
 		'status'  => true,
 		'message' => null
@@ -15726,7 +15487,7 @@ function kickstart_application_web()
  * An AJAX-powered archive extraction tool
  *
  * @package   kickstart
- * @copyright Copyright (c)2008-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2008-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
