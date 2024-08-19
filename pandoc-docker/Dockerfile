@@ -9,9 +9,9 @@ RUN apt -y install language-pack-nl
 RUN locale-gen nl_NL.UTF-8
 RUN update-locale nl_NL.UTF-8
 
-ENV LANG nl_NL.UTF-8  
-ENV LANGUAGE nl_NL  
-ENV LC_ALL nl_NL.UTF-8
+ENV LANG=nl_NL.UTF-8  
+ENV LANGUAGE=nl_NL  
+ENV LC_ALL=nl_NL.UTF-8
 
 # basic components
 RUN apt install -y wget
@@ -39,7 +39,7 @@ RUN cp -rfv /usr/share/texlive/texmf-dist/tex/latex/ica-docs/lettertypes/ /usr/s
 
 # install pandoc
 WORKDIR /tmp/
-ARG VERSION=3.0.1
+ARG VERSION=3.3
 RUN wget -O pandoc.deb https://github.com/jgm/pandoc/releases/download/${VERSION}/pandoc-${VERSION}-1-amd64.deb
 RUN dpkg -i pandoc.deb
 
