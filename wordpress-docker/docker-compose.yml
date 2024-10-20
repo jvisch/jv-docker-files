@@ -8,7 +8,7 @@ version: '3.1'
 
 services:
   wordpress:
-    image: wordpress:php8.0
+    image: wordpress:php8.2
     depends_on:
       - db
     ports:
