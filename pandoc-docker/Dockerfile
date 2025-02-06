@@ -39,7 +39,7 @@ RUN cp -rfv /usr/share/texlive/texmf-dist/tex/latex/ica-docs/lettertypes/ /usr/s
 
 # install pandoc
 WORKDIR /tmp/
-ARG VERSION=3.3
+ARG VERSION=3.6.2
 RUN wget -O pandoc.deb https://github.com/jgm/pandoc/releases/download/${VERSION}/pandoc-${VERSION}-1-amd64.deb
 RUN dpkg -i pandoc.deb
 
