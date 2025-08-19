@@ -32,10 +32,10 @@ RUN apt install -y python-is-python3
 RUN apt install -y plantuml
 
 # ICA-docs (custom latex document classes)
-RUN git clone https://bitbucket.aimsites.nl/scm/esdd/ica-docs.git /usr/share/texlive/texmf-dist/tex/latex/ica-docs
-RUN texhash
-# copy fonts
-RUN cp -rfv /usr/share/texlive/texmf-dist/tex/latex/ica-docs/lettertypes/ /usr/share/fonts/
+# RUN git clone https://bitbucket.aimsites.nl/scm/esdd/ica-docs.git /usr/share/texlive/texmf-dist/tex/latex/ica-docs
+# RUN texhash
+# # copy fonts
+# RUN cp -rfv /usr/share/texlive/texmf-dist/tex/latex/ica-docs/lettertypes/ /usr/share/fonts/
 
 # install pandoc
 WORKDIR /tmp/
