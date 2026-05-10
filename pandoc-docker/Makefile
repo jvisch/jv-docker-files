@@ -1,18 +1,17 @@
 # OPTIONS += --progress plain
 
 IMAGE_TAG := jv/pandoc-docker
-LINUX_VERSION = 2.17.1.1
+LATEST_VERSION := 3.9.0.2
 
-all: latest linux
+all: latest 
 
 latest:
-	docker build --tag $(IMAGE_TAG) $(OPTIONS) . 
+	docker build --tag $(IMAGE_TAG) $(OPTIONS) --build-arg VERSION=$(LATEST_VERSION) . 
+	docker build --tag $(IMAGE_TAG):$(LATEST_VERSION) $(OPTIONS) --build-arg VERSION=$(LATEST_VERSION) . 
 
-linux: 
-	docker build --tag $(IMAGE_TAG):$(LINUX_VERSION) $(OPTIONS) --build-arg VERSION=$(LINUX_VERSION) .
 
 clean:
 	-docker image rm $(IMAGE_TAG)
-	-docker image rm $(IMAGE_TAG):$(LINUX_VERSION)
+	-docker image rm $(IMAGE_TAG):$(LATEST_VERSION)
 	-docker image prune -f
 	-docker system prune -f

@@ -1,5 +1,8 @@
 FROM ubuntu
 
+ARG VERSION
+RUN test -n "$VERSION" || (echo "VERSION not set" && false)
+
 # update system
 RUN apt update 
 RUN apt upgrade -y
@@ -39,7 +42,6 @@ RUN apt install -y plantuml
 
 # install pandoc
 WORKDIR /tmp/
-ARG VERSION=3.6.3
 RUN wget -O pandoc.deb https://github.com/jgm/pandoc/releases/download/${VERSION}/pandoc-${VERSION}-1-amd64.deb
 RUN dpkg -i pandoc.deb
 
